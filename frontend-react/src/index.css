@@ -1,0 +1,189 @@
+/* Global Dark Theme Overrides for React Bootstrap */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #0a1628;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dark Cards */
+.card, .bg-white {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+  backdrop-filter: blur(12px);
+}
+
+.card-header {
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #e2e8f0 !important;
+}
+
+/* Dark Tables */
+.table {
+  color: #cbd5e1 !important;
+  --bs-table-bg: transparent !important;
+}
+
+.table-light, .table thead th {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table > :not(caption) > * > * {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+  background-color: transparent !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: #f1f5f9 !important;
+}
+
+/* Dark Form Controls */
+.form-control, .form-select {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #e2e8f0 !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control::placeholder {
+  color: #64748b !important;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 0 0.15rem rgba(6, 182, 212, 0.25) !important;
+  background-color: rgba(30, 41, 59, 0.95) !important;
+}
+
+.form-label {
+  color: #94a3b8 !important;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Dark Modals */
+.modal-content {
+  background-color: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+.modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Page Headings */
+h4.fw-bold, h5.fw-bold {
+  color: #f1f5f9 !important;
+}
+
+/* Text Overrides */
+.text-muted {
+  color: #64748b !important;
+}
+
+.text-dark {
+  color: #e2e8f0 !important;
+}
+
+.fw-medium, .fw-bold {
+  color: #e2e8f0;
+}
+
+/* Progress Bars */
+.progress {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 50px;
+}
+
+/* Stat Cards Hover */
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  border-color: rgba(6, 182, 212, 0.3) !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+/* Rounded pill badges */
+.badge {
+  font-weight: 600;
+}
+
+/* Links */
+a {
+  color: #38bdf8;
+}
+a:hover {
+  color: #7dd3fc;
+}
+
+/* Code styling */
+code {
+  color: #22d3ee !important;
+  background: rgba(6, 182, 212, 0.1);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+/* ===================================================
+   Unified Page Background for All Pages
+   =================================================== */
+
+/* Main content area wrapper */
+.flex-grow-1.overflow-auto {
+  background: linear-gradient(180deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%);
+  min-height: 100vh;
+}
+
+/* All page containers get the dark background */
+.container-fluid {
+  background-color: transparent;
+}
+
+/* Page content area - consistent dark background with subtle depth */
+.dashboard-container,
+.container-fluid.p-4 {
+  background: linear-gradient(135deg, rgba(10, 22, 40, 0.95) 0%, rgba(13, 31, 60, 0.9) 50%, rgba(10, 22, 40, 0.95) 100%);
+  min-height: calc(100vh - 70px);
+  border-radius: 0;
+}

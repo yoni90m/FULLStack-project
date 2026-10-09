@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — TransLink Bus Transportation</title>
+  <link rel="icon" type="image/jpeg" href="assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/tables.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Backdrop for Mobile -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="dashboard.html" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <img src="assets/icons/translink-icon.jpg" alt="TransLink Logo">
+          </div>
+          <span>Trans<span style="color: var(--accent-cyan);">Link</span></span>
+        </a>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-group-title">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="dashboard.html" class="nav-item active">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="pages/buses.html" class="nav-item">
+              <span class="nav-icon">🚍</span>
+              <span>Bus Fleet</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger,Driver">
+            <a href="pages/routes.html" class="nav-item">
+              <span class="nav-icon">🗺️</span>
+              <span>Routes</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Driver,Passenger">
+            <a href="pages/schedules.html" class="nav-item">
+              <span class="nav-icon">🕒</span>
+              <span>Schedules</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="pages/drivers.html" class="nav-item">
+              <span class="nav-icon">👨‍✈️</span>
+              <span>Drivers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="pages/passengers.html" class="nav-item">
+              <span class="nav-icon">👥</span>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="pages/bookings.html" class="nav-item">
+              <span class="nav-icon">🎫</span>
+              <span>Bookings & Seats</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="pages/payments.html" class="nav-item">
+              <span class="nav-icon">💳</span>
+              <span>Payments</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="pages/reports.html" class="nav-item">
+              <span class="nav-icon">📈</span>
+              <span>Analytics & Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-logout js-logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Top Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation">☰</button>
+          <div id="api-status-badge" class="api-status-chip">
+            <span class="status-dot active"></span> Connecting...
+          </div>
+        </div>
+
+        <div class="navbar-right">
+          <div class="user-profile-menu">
+            <div class="user-avatar js-user-avatar">A</div>
+            <div class="user-meta">
+              <span class="user-name js-user-name">System Admin</span>
+              <span class="user-role-badge js-user-role">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard View Content -->
+      <main class="content-container">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <h2>Welcome back, <span class="js-user-name">Administrator</span>!</h2>
+            <p>
+              Overview of fleet operations, active schedules, seat reservations, and revenue metrics.
+            </p>
+          </div>
+          <div class="welcome-actions">
+            <a href="pages/bookings.html" class="btn btn-accent">
+              💺 New Reservation
+            </a>
+            <a href="pages/schedules.html" class="btn btn-primary" data-role-restricted="Admin">
+              ➕ Add Schedule
+            </a>
+          </div>
+        </div>
+
+        <!-- 6 KPI Stat Cards (Section 13) -->
+        <section class="stats-grid">
+          <!-- Total Buses -->
+          <div class="stat-card" style="--stat-glow: rgba(59, 130, 246, 0.25);">
+            <div class="stat-icon-wrap stat-icon-blue">🚍</div>
+            <div class="stat-info">
+              <span class="stat-label">Total Buses</span>
+              <span class="stat-value" id="kpi-buses">--</span>
+              <span class="stat-delta up">● Fleet Active</span>
+            </div>
+          </div>
+
+          <!-- Total Drivers -->
+          <div class="stat-card" style="--stat-glow: rgba(99, 102, 241, 0.25);">
+            <div class="stat-icon-wrap stat-icon-indigo">👨‍✈️</div>
+            <div class="stat-info">
+              <span class="stat-label">Total Drivers</span>
+              <span class="stat-value" id="kpi-drivers">--</span>
+              <span class="stat-delta up">● Licensed CDL</span>
+            </div>
+          </div>
+
+          <!-- Total Routes -->
+          <div class="stat-card" style="--stat-glow: rgba(6, 182, 212, 0.25);">
+            <div class="stat-icon-wrap stat-icon-cyan">🗺️</div>
+            <div class="stat-info">
+              <span class="stat-label">Total Routes</span>
+              <span class="stat-value" id="kpi-routes">--</span>
+              <span class="stat-delta up">● Intercity Corridors</span>
+            </div>
+          </div>
+
+          <!-- Total Passengers -->
+          <div class="stat-card" style="--stat-glow: rgba(16, 185, 129, 0.25);">
+            <div class="stat-icon-wrap stat-icon-emerald">👥</div>
+            <div class="stat-info">
+              <span class="stat-label">Passengers</span>
+              <span class="stat-value" id="kpi-passengers">--</span>
+              <span class="stat-delta up">● Registered</span>
+            </div>
+          </div>
+
+          <!-- Total Bookings -->
+          <div class="stat-card" style="--stat-glow: rgba(245, 158, 11, 0.25);">
+            <div class="stat-icon-wrap stat-icon-amber">🎫</div>
+            <div class="stat-info">
+              <span class="stat-label">Total Bookings</span>
+              <span class="stat-value" id="kpi-bookings">--</span>
+              <span class="stat-delta up">● Reserved Seats</span>
+            </div>
+          </div>
+
+          <!-- Total Revenue -->
+          <div class="stat-card" style="--stat-glow: rgba(244, 63, 94, 0.25);">
+            <div class="stat-icon-wrap stat-icon-rose">💵</div>
+            <div class="stat-info">
+              <span class="stat-label">Total Revenue</span>
+              <span class="stat-value" id="kpi-revenue">$0.00</span>
+              <span class="stat-delta up">● Ledger Settled</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Two-Column Section: Recent Bookings & Fleet Status -->
+        <div class="dashboard-grid">
+          <!-- Recent Bookings Table -->
+          <div class="glass-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>🎫</span> Recent Bookings
+              </h3>
+              <a href="pages/bookings.html" class="btn btn-secondary btn-sm">View All →</a>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ref</th>
+                    <th>Passenger</th>
+                    <th>Route</th>
+                    <th>Seat</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-recent-bookings">
+                  <tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading bookings...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Fleet Status Widget -->
+          <div class="glass-card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span>🚌</span> Fleet Readiness
+              </h3>
+              <a href="pages/buses.html" class="btn btn-secondary btn-sm">Fleet →</a>
+            </div>
+            <div class="fleet-status-bars" id="dashboard-fleet-status">
+              <!-- Dynamically populated -->
+              <div class="bar-row">
+                <div class="bar-meta"><span>Available Buses</span> <strong id="bar-avail-count">0</strong></div>
+                <div class="progress-track"><div id="bar-avail-fill" class="progress-fill fill-green" style="width: 50%;"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-meta"><span>Assigned in Transit</span> <strong id="bar-assigned-count">0</strong></div>
+                <div class="progress-track"><div id="bar-assigned-fill" class="progress-fill fill-blue" style="width: 30%;"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-meta"><span>Under Maintenance</span> <strong id="bar-maint-count">0</strong></div>
+                <div class="progress-track"><div id="bar-maint-fill" class="progress-fill fill-amber" style="width: 15%;"></div></div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle);">
+              <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted);">Quick Shortcuts:</div>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <a href="pages/buses.html" class="btn btn-secondary btn-sm">Add Bus</a>
+                <a href="pages/routes.html" class="btn btn-secondary btn-sm">Add Route</a>
+                <a href="pages/schedules.html" class="btn btn-secondary btn-sm">Dispatch</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Schedules Table -->
+        <div class="glass-card dashboard-full-width">
+          <div class="card-header">
+            <h3 class="card-title">
+              <span>🕒</span> Upcoming Departures
+            </h3>
+            <a href="pages/schedules.html" class="btn btn-secondary btn-sm">Full Schedule →</a>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Bus</th>
+                  <th>Driver</th>
+                  <th>Departure</th>
+                  <th>Available Seats</th>
+                  <th>Fare</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-upcoming-schedules">
+                <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading schedules...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const [statsRes, bookingsRes, busesRes, schedRes] = await Promise.all([
+          apiFetch('/reports/stats'),
+          apiFetch('/bookings'),
+          apiFetch('/buses'),
+          apiFetch('/schedules')
+        ]);
+
+        if (statsRes.success && statsRes.data) {
+          const d = statsRes.data;
+          document.getElementById('kpi-buses').textContent = d.total_buses;
+          document.getElementById('kpi-drivers').textContent = d.total_drivers;
+          document.getElementById('kpi-routes').textContent = d.total_routes;
+          document.getElementById('kpi-passengers').textContent = d.total_passengers;
+          document.getElementById('kpi-bookings').textContent = d.total_bookings;
+          document.getElementById('kpi-revenue').textContent = `$${d.total_revenue}`;
+        }
+
+        // Recent Bookings (top 5)
+        const bookingsTbody = document.getElementById('dashboard-recent-bookings');
+        if (bookingsRes.success && Array.isArray(bookingsRes.data)) {
+          const recent = bookingsRes.data.slice(-5).reverse();
+          bookingsTbody.innerHTML = recent.map(b => `
+            <tr>
+              <td><code>${b.booking_reference}</code></td>
+              <td><strong>${b.passenger_name}</strong></td>
+              <td>${b.route_name || 'N/A'}</td>
+              <td><span class="badge badge-purple">${b.seat_number}</span></td>
+              <td><span class="badge ${b.booking_status === 'Confirmed' ? 'badge-success' : 'badge-danger'}">${b.booking_status}</span></td>
+            </tr>
+          `).join('');
+        }
+
+        // Fleet Breakdown
+        if (busesRes.success && Array.isArray(busesRes.data)) {
+          const buses = busesRes.data;
+          const total = buses.length || 1;
+          const avail = buses.filter(b => b.status === 'Available').length;
+          const assigned = buses.filter(b => b.status === 'Assigned').length;
+          const maint = buses.filter(b => b.status === 'Maintenance').length;
+
+          document.getElementById('bar-avail-count').textContent = `${avail} (${Math.round(avail/total*100)}%)`;
+          document.getElementById('bar-avail-fill').style.width = `${Math.round(avail/total*100)}%`;
+
+          document.getElementById('bar-assigned-count').textContent = `${assigned} (${Math.round(assigned/total*100)}%)`;
+          document.getElementById('bar-assigned-fill').style.width = `${Math.round(assigned/total*100)}%`;
+
+          document.getElementById('bar-maint-count').textContent = `${maint} (${Math.round(maint/total*100)}%)`;
+          document.getElementById('bar-maint-fill').style.width = `${Math.round(maint/total*100)}%`;
+        }
+
+        // Upcoming Schedules (top 4)
+        const schedTbody = document.getElementById('dashboard-upcoming-schedules');
+        if (schedRes.success && Array.isArray(schedRes.data)) {
+          const upcoming = schedRes.data.slice(0, 4);
+          schedTbody.innerHTML = upcoming.map(s => `
+            <tr>
+              <td><strong>${s.route_name || (s.origin + ' → ' + s.destination)}</strong></td>
+              <td>🚌 ${s.bus_number}</td>
+              <td>👤 ${s.driver_name}</td>
+              <td>🛫 ${s.departure_time}</td>
+              <td><span class="badge badge-success">${s.available_seats} Seats</span></td>
+              <td><strong>$${parseFloat(s.fare || 25).toFixed(2)}</strong></td>
+              <td><span class="badge badge-info">${s.status}</span></td>
+            </tr>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.error('Failed to initialize dashboard stats', err);
+      }
+    });
+  </script>
+</body>
+</html>

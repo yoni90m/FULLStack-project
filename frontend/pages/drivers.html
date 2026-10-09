@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Directory — TransLink</title>
+  <link rel="icon" type="image/jpeg" href="../assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="../dashboard.html" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <img src="../assets/icons/translink-icon.jpg" alt="TransLink Logo">
+          </div>
+          <span>Trans<span style="color: var(--accent-cyan);">Link</span></span>
+        </a>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-group-title">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="../dashboard.html" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="buses.html" class="nav-item">
+              <span class="nav-icon">🚍</span>
+              <span>Bus Fleet</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger,Driver">
+            <a href="routes.html" class="nav-item">
+              <span class="nav-icon">🗺️</span>
+              <span>Routes</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Driver,Passenger">
+            <a href="schedules.html" class="nav-item">
+              <span class="nav-icon">🕒</span>
+              <span>Schedules</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="drivers.html" class="nav-item active">
+              <span class="nav-icon">👨‍✈️</span>
+              <span>Drivers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="passengers.html" class="nav-item">
+              <span class="nav-icon">👥</span>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="bookings.html" class="nav-item">
+              <span class="nav-icon">🎫</span>
+              <span>Bookings & Seats</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="payments.html" class="nav-item">
+              <span class="nav-icon">💳</span>
+              <span>Payments</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="reports.html" class="nav-item">
+              <span class="nav-icon">📈</span>
+              <span>Analytics & Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-logout js-logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation">☰</button>
+          <div id="api-status-badge" class="api-status-chip">
+            <span class="status-dot active"></span> Connecting...
+          </div>
+        </div>
+        <div class="navbar-right">
+          <div class="user-profile-menu">
+            <div class="user-avatar js-user-avatar">A</div>
+            <div class="user-meta">
+              <span class="user-name js-user-name">System Admin</span>
+              <span class="user-role-badge js-user-role">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1><span>👨‍✈️</span> Certified Drivers Directory</h1>
+            <p>Maintain driver credentials, commercial license records, contact numbers, and duty states.</p>
+          </div>
+          <div class="page-actions" data-role-restricted="Admin">
+            <button class="btn btn-primary" id="btn-open-add-driver">
+              <span>➕</span> Register Driver
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="driver-search-input" class="search-input" placeholder="Search by driver name, phone, or license number...">
+          </div>
+
+          <div class="filter-group">
+            <select id="driver-status-filter" class="filter-select">
+              <option value="all">All Statuses</option>
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Suspended">Suspended</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <span id="driver-count-badge" class="badge badge-info">-- Drivers</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Driver Name</th>
+                <th>Phone</th>
+                <th>License Number</th>
+                <th>Status</th>
+                <th>Qualifications</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="drivers-table-body">
+              <!-- Rendered via drivers.js -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Register / Edit Driver Modal -->
+  <div id="driver-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="driver-modal-title" class="modal-title">Register New Driver</h2>
+        <button class="modal-close" onclick="closeModal('driver-modal')">✕</button>
+      </div>
+      <form id="driver-modal-form">
+        <div class="modal-body">
+          <input type="hidden" id="driver-form-id">
+
+          <div class="form-group">
+            <label class="form-label" for="driver-name">Full Legal Name <span class="required">*</span></label>
+            <input type="text" id="driver-name" class="form-control" placeholder="e.g. John Doe" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="driver-phone">Phone Number <span class="required">*</span></label>
+              <input type="tel" id="driver-phone" class="form-control" placeholder="+1 (555) 234-5678" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="driver-license">Commercial Driver's License (CDL) <span class="required">*</span></label>
+              <input type="text" id="driver-license" class="form-control" placeholder="e.g. DL-NY-9023812" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="driver-status">Duty Status <span class="required">*</span></label>
+            <select id="driver-status" class="form-control">
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Suspended">Suspended</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('driver-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Driver</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/drivers.js"></script>
+</body>
+</html>

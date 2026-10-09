@@ -1,0 +1,628 @@
+/* ===================================================
+   TransLink — Coach USA Style Hero & Modern Navigation
+   File: coach-hero.css
+   =================================================== */
+
+/* Top Navigation Bar — Clean Modern White Style matching Coach USA */
+.coach-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2.5rem;
+  font-family: var(--font-main, 'Inter', sans-serif);
+}
+
+.coach-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.coach-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #004b87;
+  letter-spacing: -0.02em;
+}
+
+.coach-brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 75, 135, 0.2);
+  border: 1px solid #e2e8f0;
+}
+
+.coach-brand-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coach-brand span.brand-accent {
+  color: #0284c7;
+}
+
+.coach-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.coach-status-pill .pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+  animation: pulse-dot 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Center Navigation Links like Coach USA */
+.coach-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.coach-nav-item a {
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.coach-nav-item a:hover {
+  color: #005696;
+}
+
+.coach-nav-item.active a {
+  color: #005696;
+  font-weight: 700;
+}
+
+.coach-nav-item.active a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #005696;
+  border-radius: 3px;
+}
+
+/* Right Navigation Action Icons */
+.coach-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.coach-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #005696;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 86, 150, 0.25);
+}
+
+.coach-icon-btn:hover {
+  background: #004377;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 86, 150, 0.35);
+}
+
+.coach-icon-btn.outline {
+  background: transparent;
+  color: #005696;
+  border: 1.5px solid #005696;
+  box-shadow: none;
+}
+
+.coach-icon-btn.outline:hover {
+  background: #f0f7ff;
+}
+
+.coach-btn-dashboard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #0f172a;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.coach-btn-dashboard:hover {
+  background: #005696;
+  transform: translateY(-1px);
+}
+
+/* ===================================================
+   Hero Section Container (Coach USA Layout)
+   =================================================== */
+.coach-hero-wrapper {
+  background: #eef5fc;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 86, 150, 0.1) 0px, transparent 50%);
+  padding: 2.5rem 1.5rem 4.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Big Blue Hero Card Container */
+.coach-hero-banner {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, #005696 0%, #00457a 100%);
+  border-radius: 28px 28px 24px 24px;
+  padding: 3.5rem 2.5rem 2.75rem;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0, 50, 90, 0.25);
+  position: relative;
+}
+
+.coach-hero-title {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  font-size: 2.85rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0 0 0.85rem;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  line-height: 1.15;
+}
+
+.coach-hero-subtitle {
+  font-size: 1.15rem;
+  color: #dbeafe;
+  max-width: 780px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* ===================================================
+   White Booking Card (Embedded inside the Hero Banner)
+   =================================================== */
+.coach-booking-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.75rem 2rem 1.5rem;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  color: #1e293b;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Top bar inside the card */
+.booking-card-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.booking-title-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #005696;
+}
+
+.booking-title-tab .ticket-icon {
+  font-size: 1.35rem;
+}
+
+.trip-type-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f1f5f9;
+  padding: 0.35rem 0.45rem;
+  border-radius: 9999px;
+  border: 1.5px solid #cbd5e1;
+}
+
+.trip-type-btn {
+  border: none;
+  background: transparent;
+  padding: 0.45rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #475569;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.trip-type-btn:hover {
+  color: #005696;
+  background: rgba(0, 86, 150, 0.06);
+}
+
+.trip-type-btn.active {
+  background: #005696;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(0, 86, 150, 0.35);
+}
+
+/* Outlined Form Fields Grid */
+.coach-form-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1.25fr 1fr 1fr auto;
+  gap: 1.15rem;
+  align-items: stretch;
+}
+
+.coach-input-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.coach-field-box {
+  position: relative;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0.5rem 0.85rem 0.45rem 2.65rem;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.coach-field-box:hover {
+  border-color: #94a3b8;
+}
+
+.coach-field-box:focus-within {
+  border-color: #005696;
+  box-shadow: 0 0 0 3px rgba(0, 86, 150, 0.15);
+}
+
+.coach-field-box .field-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.15rem;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.coach-field-box label {
+  position: absolute;
+  top: -9px;
+  left: 12px;
+  background: #ffffff;
+  padding: 0 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #005696;
+}
+
+.coach-field-box select,
+.coach-field-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  width: 100%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.coach-field-box input[type="date"] {
+  cursor: pointer;
+}
+
+/* Search CTA Button */
+.coach-btn-search {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 0 1.75rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+  min-height: 58px;
+  white-space: nowrap;
+}
+
+.coach-btn-search:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
+}
+
+.coach-btn-search:active {
+  transform: translateY(0);
+}
+
+/* Quick Route Chips below the inputs */
+.quick-routes-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.quick-routes-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.route-chip {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-decoration: none;
+}
+
+.route-chip:hover {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  color: #005696;
+  transform: translateY(-1px);
+}
+
+/* Secondary CTA Buttons below the card */
+.coach-subhero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.coach-subhero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.coach-subhero-btn.primary {
+  background: #f59e0b;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.coach-subhero-btn.primary:hover {
+  background: #d97706;
+  transform: translateY(-2px);
+}
+
+.coach-subhero-btn.secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.coach-subhero-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Bus Stop Illustration Accent bar matching Coach USA */
+.coach-bottom-strip {
+  max-width: 1180px;
+  margin: 1.5rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.bus-stop-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.bus-stop-sign {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #005696;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 86, 150, 0.3);
+}
+
+.bus-stop-sign .icon {
+  font-size: 1.1rem;
+}
+
+.bus-stop-text h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.bus-stop-text p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.transit-perks-row {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.transit-perk {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.transit-perk span.perk-icon {
+  color: #0284c7;
+  font-size: 1rem;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1100px) {
+  .coach-nav-links {
+    display: none; /* Collapses for cleaner tablet view */
+  }
+  
+  .coach-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .coach-btn-search {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .coach-header {
+    padding: 0.65rem 1.25rem;
+  }
+
+  .coach-hero-title {
+    font-size: 1.95rem;
+  }
+
+  .coach-hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .coach-booking-card {
+    padding: 1.25rem 1.25rem;
+  }
+
+  .coach-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .coach-btn-search {
+    grid-column: span 1;
+  }
+
+  .coach-bottom-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .transit-perks-row {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}

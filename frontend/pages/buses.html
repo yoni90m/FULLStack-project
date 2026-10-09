@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Fleet Management — TransLink</title>
+  <link rel="icon" type="image/jpeg" href="../assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="../dashboard.html" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <img src="../assets/icons/translink-icon.jpg" alt="TransLink Logo">
+          </div>
+          <span>Trans<span style="color: var(--accent-cyan);">Link</span></span>
+        </a>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-group-title">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="../dashboard.html" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="buses.html" class="nav-item active">
+              <span class="nav-icon">🚍</span>
+              <span>Bus Fleet</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger,Driver">
+            <a href="routes.html" class="nav-item">
+              <span class="nav-icon">🗺️</span>
+              <span>Routes</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Driver,Passenger">
+            <a href="schedules.html" class="nav-item">
+              <span class="nav-icon">🕒</span>
+              <span>Schedules</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="drivers.html" class="nav-item">
+              <span class="nav-icon">👨‍✈️</span>
+              <span>Drivers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="passengers.html" class="nav-item">
+              <span class="nav-icon">👥</span>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="bookings.html" class="nav-item">
+              <span class="nav-icon">🎫</span>
+              <span>Bookings & Seats</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="payments.html" class="nav-item">
+              <span class="nav-icon">💳</span>
+              <span>Payments</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="reports.html" class="nav-item">
+              <span class="nav-icon">📈</span>
+              <span>Analytics & Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-logout js-logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation">☰</button>
+          <div id="api-status-badge" class="api-status-chip">
+            <span class="status-dot active"></span> Connecting...
+          </div>
+        </div>
+        <div class="navbar-right">
+          <div class="user-profile-menu">
+            <div class="user-avatar js-user-avatar">A</div>
+            <div class="user-meta">
+              <span class="user-name js-user-name">System Admin</span>
+              <span class="user-role-badge js-user-role">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1><span>🚍</span> Bus Fleet Management</h1>
+            <p>Manage vehicles, seating capacities, license registrations, and statuses.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" id="btn-open-add-bus">
+              <span>➕</span> Register New Bus
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="bus-search-input" class="search-input" placeholder="Search by bus number, plate, model...">
+          </div>
+
+          <div class="filter-group">
+            <select id="bus-status-filter" class="filter-select">
+              <option value="all">All Statuses</option>
+              <option value="Available">Available</option>
+              <option value="Assigned">Assigned</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <span id="bus-count-badge" class="badge badge-info">-- Buses</span>
+          </div>
+        </div>
+
+        <!-- Buses Table -->
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Bus Number</th>
+                <th>Plate Number</th>
+                <th>Model</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="buses-table-body">
+              <!-- Rendered via buses.js -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Add / Edit Bus Modal Dialog -->
+  <div id="bus-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="bus-modal-title" class="modal-title">Register New Bus</h2>
+        <button class="modal-close" onclick="closeModal('bus-modal')">✕</button>
+      </div>
+      <form id="bus-modal-form">
+        <div class="modal-body">
+          <input type="hidden" id="bus-form-id">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="bus-number">Bus Number <span class="required">*</span></label>
+              <input type="text" id="bus-number" class="form-control" placeholder="e.g. BUS-108" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bus-plate">Plate Number <span class="required">*</span></label>
+              <input type="text" id="bus-plate" class="form-control" placeholder="e.g. NY-TR-9900" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="bus-model">Vehicle Model <span class="required">*</span></label>
+            <input type="text" id="bus-model" class="form-control" placeholder="e.g. Volvo 9700 Luxury Cruiser" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="bus-capacity">Seating Capacity <span class="required">*</span></label>
+              <input type="number" id="bus-capacity" class="form-control" value="40" min="1" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bus-status">Fleet Status <span class="required">*</span></label>
+              <select id="bus-status" class="form-control">
+                <option value="Available">Available</option>
+                <option value="Assigned">Assigned</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('bus-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Bus</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/buses.js"></script>
+</body>
+</html>

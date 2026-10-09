@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TransLink — Modern Bus Transportation Management System</title>
+  <meta name="description" content="TransLink is an enterprise-grade bus transportation management and online seat booking platform.">
+  <link rel="icon" type="image/jpeg" href="assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/forms.css">
+  <link rel="stylesheet" href="css/tables.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/coach-hero.css">
+  <style>
+    .hero-section {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-full);
+      color: #fbbf24;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      max-width: 850px;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, #f59e0b, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin-bottom: 2.5rem;
+    }
+    .trip-search-widget {
+      width: 100%;
+      max-width: 960px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 3.5rem;
+    }
+    .search-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) 140px;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto 5rem;
+      padding: 0 1.5rem;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      transition: transform var(--transition-fast);
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>  <!-- Top Navigation Bar matching Coach USA design -->
+  <header class="coach-header">
+    <div class="coach-header-left">
+      <a href="index.html" class="coach-brand">
+        <div class="coach-brand-icon">
+          <img src="assets/icons/translink-icon.jpg" alt="TransLink Logo">
+        </div>
+        <span>Trans<span class="brand-accent">Link</span></span>
+      </a>
+      <div id="api-status-badge" class="coach-status-pill">
+        <span class="pulse-dot"></span> Flask API Live
+      </div>
+    </div>
+
+    <!-- Center Navigation Links -->
+    <ul class="coach-nav-links">
+      <li class="coach-nav-item active"><a href="pages/routes.html">Bus Routes</a></li>
+      <li class="coach-nav-item"><a href="pages/schedules.html">Airport Transportation</a></li>
+      <li class="coach-nav-item"><a href="pages/buses.html">Charter Bus</a></li>
+      <li class="coach-nav-item"><a href="pages/drivers.html">Contract Services</a></li>
+      <li class="coach-nav-item"><a href="pages/routes.html">Bus Tours</a></li>
+    </ul>
+
+    <!-- Right Actions -->
+    <div class="coach-header-right">
+      <a href="pages/bookings.html" class="coach-icon-btn" title="My Bookings & Tickets">🎫</a>
+      <a href="login.html" class="coach-btn-dashboard" style="background: #005696;"><span>Sign In</span> 👤</a>
+      <a href="register.html" class="coach-btn-dashboard" style="background: #0f172a;"><span>Register</span></a>
+    </div>
+  </header>
+
+  <!-- Main Hero & Trip Search matching Coach USA -->
+  <main>
+    <section class="coach-hero-wrapper">
+      <div class="coach-hero-banner">
+        <h1 class="coach-hero-title">WHERE CAN WE TAKE YOU TODAY?</h1>
+        <p class="coach-hero-subtitle">
+          TransLink provides Commuter Services, Airport Transportation, Intercity Express Routes, Tours, Contract Services, and more.
+        </p>
+
+        <!-- Embedded Booking Card -->
+        <div class="coach-booking-card">
+          <div class="booking-card-topbar">
+            <div class="booking-title-tab">
+              <span class="ticket-icon">🎫</span>
+              <span>Book Bus Tickets - Travel for Commuter and Airport Routes</span>
+            </div>
+            <div class="trip-type-selector">
+              <button type="button" class="trip-type-btn active" id="btn-oneway">● One-Way</button>
+              <button type="button" class="trip-type-btn" id="btn-roundtrip">○ Round Trip</button>
+            </div>
+          </div>
+
+          <form id="landing-search-form" onsubmit="event.preventDefault(); handleTripSearch();">
+            <div class="coach-form-grid">
+              <!-- Origin -->
+              <div class="coach-input-group">
+                <div class="coach-field-box">
+                  <span class="field-icon">📍</span>
+                  <label for="search-origin">Origin</label>
+                  <select id="search-origin">
+                    <option value="Adama (Nazret)">Adama (Nazret)</option>
+                    <option value="Addis Ababa" selected>Addis Ababa</option>
+                    <option value="Adigrat">Adigrat</option>
+                    <option value="Adwa">Adwa</option>
+                    <option value="Agaro">Agaro</option>
+                    <option value="Aksum">Aksum</option>
+                    <option value="Alaba Kulito">Alaba Kulito</option>
+                    <option value="Alamata">Alamata</option>
+                    <option value="Aleta Wendo">Aleta Wendo</option>
+                    <option value="Ambo">Ambo</option>
+                    <option value="Arba Minch">Arba Minch</option>
+                    <option value="Areka">Areka</option>
+                    <option value="Arsi Negele">Arsi Negele</option>
+                    <option value="Asella">Asella</option>
+                    <option value="Assosa">Assosa</option>
+                    <option value="Bahir Dar">Bahir Dar</option>
+                    <option value="Bale Robe">Bale Robe</option>
+                    <option value="Batu">Batu</option>
+                    <option value="Bedessa">Bedessa</option>
+                    <option value="Bishoftu">Bishoftu</option>
+                    <option value="Boditi">Boditi</option>
+                    <option value="Bonga">Bonga</option>
+                    <option value="Bule Hora">Bule Hora</option>
+                    <option value="Burayu">Burayu</option>
+                    <option value="Butajira">Butajira</option>
+                    <option value="Chiro">Chiro</option>
+                    <option value="Dangila">Dangila</option>
+                    <option value="Debre Birhan">Debre Birhan</option>
+                    <option value="Debre Mark'os">Debre Mark'os</option>
+                    <option value="Debre Tabor">Debre Tabor</option>
+                    <option value="Degehabur">Degehabur</option>
+                    <option value="Dembi Dolo">Dembi Dolo</option>
+                    <option value="Dessie">Dessie</option>
+                    <option value="Dilla">Dilla</option>
+                    <option value="Dire Dawa">Dire Dawa</option>
+                    <option value="Durame">Durame</option>
+                    <option value="Fiche">Fiche</option>
+                    <option value="Finote Selam">Finote Selam</option>
+                    <option value="Gambela">Gambela</option>
+                    <option value="Gondar">Gondar</option>
+                    <option value="Harar">Harar</option>
+                    <option value="Hawassa">Hawassa</option>
+                    <option value="Jijiga">Jijiga</option>
+                    <option value="Jimma">Jimma</option>
+                    <option value="Jinka">Jinka</option>
+                    <option value="Kobo">Kobo</option>
+                    <option value="Kombolcha">Kombolcha</option>
+                    <option value="Mekelle">Mekelle</option>
+                    <option value="Meki">Meki</option>
+                    <option value="Metu">Metu</option>
+                    <option value="Mizan Teferi">Mizan Teferi</option>
+                    <option value="Mojo">Mojo</option>
+                    <option value="Mota">Mota</option>
+                    <option value="Negele Borana">Negele Borana</option>
+                    <option value="Nekemte">Nekemte</option>
+                    <option value="Sawla">Sawla</option>
+                    <option value="Sebeta">Sebeta</option>
+                    <option value="Semera">Semera</option>
+                    <option value="Shashamane">Shashamane</option>
+                    <option value="Shire">Shire</option>
+                    <option value="Sodo">Sodo</option>
+                    <option value="Tepi">Tepi</option>
+                    <option value="Waliso">Waliso</option>
+                    <option value="Weldiya">Weldiya</option>
+                    <option value="Welkite">Welkite</option>
+                    <option value="Wukro">Wukro</option>
+                    <option value="Yirgalem">Yirgalem</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Destination -->
+              <div class="coach-input-group">
+                <div class="coach-field-box">
+                  <span class="field-icon">📍</span>
+                  <label for="search-destination">Destination</label>
+                  <select id="search-destination">
+                    <option value="Adama (Nazret)">Adama (Nazret)</option>
+                    <option value="Addis Ababa">Addis Ababa</option>
+                    <option value="Adigrat">Adigrat</option>
+                    <option value="Adwa">Adwa</option>
+                    <option value="Agaro">Agaro</option>
+                    <option value="Aksum">Aksum</option>
+                    <option value="Alaba Kulito">Alaba Kulito</option>
+                    <option value="Alamata">Alamata</option>
+                    <option value="Aleta Wendo">Aleta Wendo</option>
+                    <option value="Ambo">Ambo</option>
+                    <option value="Arba Minch">Arba Minch</option>
+                    <option value="Areka">Areka</option>
+                    <option value="Arsi Negele">Arsi Negele</option>
+                    <option value="Asella">Asella</option>
+                    <option value="Assosa">Assosa</option>
+                    <option value="Bahir Dar" selected>Bahir Dar</option>
+                    <option value="Bale Robe">Bale Robe</option>
+                    <option value="Batu">Batu</option>
+                    <option value="Bedessa">Bedessa</option>
+                    <option value="Bishoftu">Bishoftu</option>
+                    <option value="Boditi">Boditi</option>
+                    <option value="Bonga">Bonga</option>
+                    <option value="Bule Hora">Bule Hora</option>
+                    <option value="Burayu">Burayu</option>
+                    <option value="Butajira">Butajira</option>
+                    <option value="Chiro">Chiro</option>
+                    <option value="Dangila">Dangila</option>
+                    <option value="Debre Birhan">Debre Birhan</option>
+                    <option value="Debre Mark'os">Debre Mark'os</option>
+                    <option value="Debre Tabor">Debre Tabor</option>
+                    <option value="Degehabur">Degehabur</option>
+                    <option value="Dembi Dolo">Dembi Dolo</option>
+                    <option value="Dessie">Dessie</option>
+                    <option value="Dilla">Dilla</option>
+                    <option value="Dire Dawa">Dire Dawa</option>
+                    <option value="Durame">Durame</option>
+                    <option value="Fiche">Fiche</option>
+                    <option value="Finote Selam">Finote Selam</option>
+                    <option value="Gambela">Gambela</option>
+                    <option value="Gondar">Gondar</option>
+                    <option value="Harar">Harar</option>
+                    <option value="Hawassa">Hawassa</option>
+                    <option value="Jijiga">Jijiga</option>
+                    <option value="Jimma">Jimma</option>
+                    <option value="Jinka">Jinka</option>
+                    <option value="Kobo">Kobo</option>
+                    <option value="Kombolcha">Kombolcha</option>
+                    <option value="Mekelle">Mekelle</option>
+                    <option value="Meki">Meki</option>
+                    <option value="Metu">Metu</option>
+                    <option value="Mizan Teferi">Mizan Teferi</option>
+                    <option value="Mojo">Mojo</option>
+                    <option value="Mota">Mota</option>
+                    <option value="Negele Borana">Negele Borana</option>
+                    <option value="Nekemte">Nekemte</option>
+                    <option value="Sawla">Sawla</option>
+                    <option value="Sebeta">Sebeta</option>
+                    <option value="Semera">Semera</option>
+                    <option value="Shashamane">Shashamane</option>
+                    <option value="Shire">Shire</option>
+                    <option value="Sodo">Sodo</option>
+                    <option value="Tepi">Tepi</option>
+                    <option value="Waliso">Waliso</option>
+                    <option value="Weldiya">Weldiya</option>
+                    <option value="Welkite">Welkite</option>
+                    <option value="Wukro">Wukro</option>
+                    <option value="Yirgalem">Yirgalem</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Departure Date -->
+              <div class="coach-input-group">
+                <div class="coach-field-box">
+                  <span class="field-icon">📅</span>
+                  <label for="search-date">Departure Date</label>
+                  <input type="date" id="search-date" value="2026-10-06">
+                </div>
+              </div>
+
+              <!-- Return Date (for Round Trip) -->
+              <div class="coach-input-group" id="group-return-date" style="display: none;">
+                <div class="coach-field-box">
+                  <span class="field-icon">📅</span>
+                  <label for="search-return-date">Return Date</label>
+                  <input type="date" id="search-return-date" value="2026-10-10">
+                </div>
+              </div>
+
+              <!-- Passengers -->
+              <div class="coach-input-group">
+                <div class="coach-field-box">
+                  <span class="field-icon">👤</span>
+                  <label for="search-passengers">Passengers</label>
+                  <select id="search-passengers">
+                    <option value="1" selected>1 Passenger</option>
+                    <option value="2">2 Passengers</option>
+                    <option value="3">3 Passengers</option>
+                    <option value="4">4 Passengers</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Search CTA Button -->
+              <button type="submit" class="coach-btn-search">
+                <span>Search Bus Tickets</span> 🔍
+              </button>
+            </div>
+
+            <!-- Quick popular route chips -->
+            <div class="quick-routes-bar">
+              <span class="quick-routes-label">Popular Express Corridors:</span>
+              <a href="#" class="route-chip" onclick="quickFillRoute('Addis Ababa', 'Bahir Dar'); return false;">Addis Ababa ⇄ Bahir Dar</a>
+              <a href="#" class="route-chip" onclick="quickFillRoute('Addis Ababa', 'Hawassa'); return false;">Addis Ababa ⇄ Hawassa</a>
+              <a href="#" class="route-chip" onclick="quickFillRoute('Addis Ababa', 'Dire Dawa'); return false;">Addis Ababa ⇄ Dire Dawa</a>
+              <a href="#" class="route-chip" onclick="quickFillRoute('Gondar', 'Bahir Dar'); return false;">Gondar ⇄ Bahir Dar</a>
+              <a href="#" class="route-chip" onclick="quickFillRoute('Addis Ababa', 'Jimma'); return false;">Addis Ababa ⇄ Jimma</a>
+            </div>
+          </form>
+        </div>
+
+        <!-- Quick Sub-Hero Actions -->
+        <div class="coach-subhero-actions">
+          <a href="pages/routes.html" class="coach-subhero-btn primary">
+            Explore All Bus Routes 🗺️
+          </a>
+          <a href="pages/bookings.html" class="coach-subhero-btn secondary">
+            Interactive Seat Map Preview 💺
+          </a>
+        </div>
+      </div>
+
+      <!-- Coach USA Style Bottom Transit Strip with Bus Stop Badge -->
+      <div class="coach-bottom-strip">
+        <div class="bus-stop-badge">
+          <div class="bus-stop-sign">
+            <span class="icon">🚌</span>
+            <span>BUS<br>STOP</span>
+          </div>
+          <div class="bus-stop-text">
+            <h4>Nationwide Intercity Express Terminals</h4>
+            <p>Connecting Addis Ababa, regional hubs, and airport transit corridors</p>
+          </div>
+        </div>
+
+        <div class="transit-perks-row">
+          <div class="transit-perk"><span class="perk-icon">⚡</span> Instant Seat Confirmation</div>
+          <div class="transit-perk"><span class="perk-icon">🛡️</span> Double-Booking Shield</div>
+          <div class="transit-perk"><span class="perk-icon">📱</span> Digital Mobile E-Tickets</div>
+          <div class="transit-perk"><span class="perk-icon">🕒</span> 99.8% On-Time Dispatch</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- System Architecture & Conceptual Showcase -->
+    <section class="system-showcase-section">
+      <div class="system-showcase-card">
+        <div class="system-showcase-header">
+          <div class="badge-pill">
+            <span class="pulse-circle"></span> Ethiopian National Transit Network
+          </div>
+          <h2>Ethiopian Bus Transportation System</h2>
+          <p>
+            Nationwide intercity transit operations connecting Addis Ababa, Bahir Dar, Hawassa, Dire Dawa, Gondar, Mekelle, Jimma, and regional corridors with live GPS route monitoring, smart coach dispatching, and instant seat reservations.
+          </p>
+        </div>
+
+        <div class="showcase-image-wrapper">
+          <img src="assets/images/bus-system-hero.jpg" alt="Ethiopian Bus Transportation Management System" id="bus-system-overview-img">
+        </div>
+
+        <div class="showcase-floating-tags">
+          <div class="showcase-tag-item">
+            <div class="tag-icon" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8;">🚌</div>
+            <div class="tag-content">
+              <h4>Smart Fleet Dispatch</h4>
+              <p>Real-time vehicle status, capacity monitoring, and automated driver-bus assignments.</p>
+            </div>
+          </div>
+
+          <div class="showcase-tag-item">
+            <div class="tag-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🗺️</div>
+            <div class="tag-content">
+              <h4>Conflict-Free Routing</h4>
+              <p>Dynamic transit paths connecting intercity hubs with zero overlapping schedule collisions.</p>
+            </div>
+          </div>
+
+          <div class="showcase-tag-item">
+            <div class="tag-icon" style="background: rgba(34, 197, 94, 0.15); color: #4ade80;">💺</div>
+            <div class="tag-content">
+              <h4>Interactive Seat Map</h4>
+              <p>Visual aisle layout with real-time seat lock, double-booking shield, and e-tickets.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Platform Features -->
+    <section class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background: rgba(245, 158, 11, 0.14); color: #fbbf24;">🚌</div>
+        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 0.5rem; color: #fff;">Fleet Management</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Track bus capacities, vehicle models, maintenance states, and plate registration numbers in real-time.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee;">💺</div>
+        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 0.5rem; color: #fff;">Visual Seat Selection</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Dynamic coach layout with aisle separation, instant seat occupancy validation, and automated double-booking prevention.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">⏱️</div>
+        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 0.5rem; color: #fff;">Conflict-Free Schedules</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Intelligent schedule management ensuring no driver or bus is ever double-booked over overlapping transit windows.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 TransLink Transportation Management System. Built with Python Flask, MySQL, and Vanilla Web Technologies.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    function quickFillRoute(origin, dest) {
+      const origEl = document.getElementById('search-origin');
+      const destEl = document.getElementById('search-destination');
+      if (origEl) origEl.value = origin;
+      if (destEl) destEl.value = dest;
+    }
+
+    function handleTripSearch() {
+      const origin = document.getElementById('search-origin')?.value || '';
+      const destination = document.getElementById('search-destination')?.value || '';
+      const date = document.getElementById('search-date')?.value || '';
+      const passengers = document.getElementById('search-passengers')?.value || '1';
+      window.location.href = `pages/bookings.html?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&date=${encodeURIComponent(date)}&passengers=${encodeURIComponent(passengers)}`;
+    }
+
+    document.getElementById('btn-oneway')?.addEventListener('click', function() {
+      this.classList.add('active');
+      this.textContent = '● One-Way';
+      const roundBtn = document.getElementById('btn-roundtrip');
+      if (roundBtn) {
+        roundBtn.classList.remove('active');
+        roundBtn.textContent = '○ Round Trip';
+      }
+      const returnGroup = document.getElementById('group-return-date');
+      if (returnGroup) returnGroup.style.display = 'none';
+    });
+
+    document.getElementById('btn-roundtrip')?.addEventListener('click', function() {
+      this.classList.add('active');
+      this.textContent = '● Round Trip';
+      const onewayBtn = document.getElementById('btn-oneway');
+      if (onewayBtn) {
+        onewayBtn.classList.remove('active');
+        onewayBtn.textContent = '○ One-Way';
+      }
+      const returnGroup = document.getElementById('group-return-date');
+      if (returnGroup) returnGroup.style.display = 'flex';
+    });
+  </script>
+</body>
+</html>

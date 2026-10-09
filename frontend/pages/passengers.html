@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passenger Management — TransLink</title>
+  <link rel="icon" type="image/jpeg" href="../assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="../dashboard.html" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <img src="../assets/icons/translink-icon.jpg" alt="TransLink Logo">
+          </div>
+          <span>Trans<span style="color: var(--accent-cyan);">Link</span></span>
+        </a>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-group-title">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="../dashboard.html" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="buses.html" class="nav-item">
+              <span class="nav-icon">🚍</span>
+              <span>Bus Fleet</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger,Driver">
+            <a href="routes.html" class="nav-item">
+              <span class="nav-icon">🗺️</span>
+              <span>Routes</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Driver,Passenger">
+            <a href="schedules.html" class="nav-item">
+              <span class="nav-icon">🕒</span>
+              <span>Schedules</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="drivers.html" class="nav-item">
+              <span class="nav-icon">👨‍✈️</span>
+              <span>Drivers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="passengers.html" class="nav-item active">
+              <span class="nav-icon">👥</span>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="bookings.html" class="nav-item">
+              <span class="nav-icon">🎫</span>
+              <span>Bookings & Seats</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="payments.html" class="nav-item">
+              <span class="nav-icon">💳</span>
+              <span>Payments</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="reports.html" class="nav-item">
+              <span class="nav-icon">📈</span>
+              <span>Analytics & Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-logout js-logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation">☰</button>
+          <div id="api-status-badge" class="api-status-chip">
+            <span class="status-dot active"></span> Connecting...
+          </div>
+        </div>
+        <div class="navbar-right">
+          <div class="user-profile-menu">
+            <div class="user-avatar js-user-avatar">A</div>
+            <div class="user-meta">
+              <span class="user-name js-user-name">System Admin</span>
+              <span class="user-role-badge js-user-role">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1><span>👥</span> Booked Passenger Manifest</h1>
+            <p>View passengers who have reserved tickets, arranged by their assigned bus fleet & scheduled trips.</p>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="passenger-search-input" class="search-input" placeholder="Search by passenger, bus number, ticket ref, or route...">
+          </div>
+
+          <div class="filter-group">
+            <select id="passenger-bus-filter" class="filter-select">
+              <option value="all">🚍 All Buses</option>
+            </select>
+
+            <select id="passenger-status-filter" class="filter-select">
+              <option value="all">All Booking Statuses</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <span id="passenger-count-badge" class="badge badge-info">-- Passengers</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Passenger</th>
+                <th>Assigned Bus</th>
+                <th>Route & Departure</th>
+                <th>Seat</th>
+                <th>Ticket Ref</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="passengers-table-body">
+              <!-- Rendered via passengers.js -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Passenger Trip History Modal -->
+  <div id="passenger-history-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="history-passenger-name" class="modal-title">Passenger Trips History</h2>
+        <button class="modal-close" onclick="closeModal('passenger-history-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="passenger-history-list" class="activity-list">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('passenger-history-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/passengers.js"></script>
+</body>
+</html>

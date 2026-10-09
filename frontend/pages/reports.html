@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics & Executive Reports — TransLink</title>
+  <link rel="icon" type="image/jpeg" href="../assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/tables.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="../dashboard.html" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <img src="../assets/icons/translink-icon.jpg" alt="TransLink Logo">
+          </div>
+          <span>Trans<span style="color: var(--accent-cyan);">Link</span></span>
+        </a>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-group-title">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="../dashboard.html" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="buses.html" class="nav-item">
+              <span class="nav-icon">🚍</span>
+              <span>Bus Fleet</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger,Driver">
+            <a href="routes.html" class="nav-item">
+              <span class="nav-icon">🗺️</span>
+              <span>Routes</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Driver,Passenger">
+            <a href="schedules.html" class="nav-item">
+              <span class="nav-icon">🕒</span>
+              <span>Schedules</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="drivers.html" class="nav-item">
+              <span class="nav-icon">👨‍✈️</span>
+              <span>Drivers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="passengers.html" class="nav-item">
+              <span class="nav-icon">👥</span>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="bookings.html" class="nav-item">
+              <span class="nav-icon">🎫</span>
+              <span>Bookings & Seats</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="payments.html" class="nav-item">
+              <span class="nav-icon">💳</span>
+              <span>Payments</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="reports.html" class="nav-item active">
+              <span class="nav-icon">📈</span>
+              <span>Analytics & Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-logout js-logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation">☰</button>
+          <div id="api-status-badge" class="api-status-chip">
+            <span class="status-dot active"></span> Connecting...
+          </div>
+        </div>
+        <div class="navbar-right">
+          <div class="user-profile-menu">
+            <div class="user-avatar js-user-avatar">A</div>
+            <div class="user-meta">
+              <span class="user-name js-user-name">System Admin</span>
+              <span class="user-role-badge js-user-role">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1><span>📈</span> Transportation Analytics & Audits</h1>
+            <p>Financial ledger metrics, route profitability, and vehicle fleet utilization reports.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-secondary" id="btn-print-report">
+              <span>🖨️</span> Print Report
+            </button>
+            <button class="btn btn-primary" id="btn-export-csv">
+              <span>📥</span> Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Financial & Operational KPI Cards -->
+        <section class="stats-grid">
+          <div class="stat-card" style="--stat-glow: rgba(16, 185, 129, 0.25);">
+            <div class="stat-icon-wrap stat-icon-emerald">💵</div>
+            <div class="stat-info">
+              <span class="stat-label">Gross Revenue</span>
+              <span class="stat-value" id="report-revenue">$0.00</span>
+              <span class="stat-delta up">Settled Transactions</span>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-glow: rgba(79, 70, 229, 0.25);">
+            <div class="stat-icon-wrap stat-icon-indigo">🎫</div>
+            <div class="stat-info">
+              <span class="stat-label">Confirmed Seats</span>
+              <span class="stat-value" id="report-confirmed-count">0</span>
+              <span class="stat-delta up">Active Tickets</span>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-glow: rgba(6, 182, 212, 0.25);">
+            <div class="stat-icon-wrap stat-icon-cyan">🏷️</div>
+            <div class="stat-info">
+              <span class="stat-label">Average Ticket Fare</span>
+              <span class="stat-value" id="report-avg-fare">$0.00</span>
+              <span class="stat-delta up">Across All Corridors</span>
+            </div>
+          </div>
+
+          <div class="stat-card" style="--stat-glow: rgba(245, 158, 11, 0.25);">
+            <div class="stat-icon-wrap stat-icon-amber">🚍</div>
+            <div class="stat-info">
+              <span class="stat-label">Fleet Readiness</span>
+              <span class="stat-value" id="report-fleet-util">0%</span>
+              <span class="stat-delta up">Available / In Transit</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Route Profitability & Demand Breakdown -->
+        <div class="glass-card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <h3 class="card-title">
+              <span>🗺️</span> Route Volume & Performance
+            </h3>
+            <span class="card-title-badge">Ranked by revenue</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Route Corridor</th>
+                  <th>Trips Scheduled</th>
+                  <th>Tickets Sold</th>
+                  <th>Distance</th>
+                  <th>Gross Yield</th>
+                </tr>
+              </thead>
+              <tbody id="route-performance-body">
+                <tr><td colspan="5" style="text-align: center; padding: 2rem;">Calculating route performance...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Fleet Utilization Report -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <span>🚍</span> Vehicle Fleet Assignment Summary
+            </h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Bus & Plate</th>
+                  <th>Model</th>
+                  <th>Capacity</th>
+                  <th>Schedules Assigned</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="fleet-report-body">
+                <tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading fleet summary...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/reports.js"></script>
+</body>
+</html>

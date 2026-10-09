@@ -1,0 +1,25 @@
+/* Global App Styles */
+
+/* Bus image background for the entire app */
+.app-bg {
+  min-height: 100vh;
+  background-image: url('./assets/hero_bus.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+}
+
+.app-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 30, 0.88);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.app-bg > * {
+  position: relative;
+  z-index: 1;
+}

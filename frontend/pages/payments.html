@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Ledger — TransLink</title>
+  <link rel="icon" type="image/jpeg" href="../assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="../dashboard.html" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <img src="../assets/icons/translink-icon.jpg" alt="TransLink Logo">
+          </div>
+          <span>Trans<span style="color: var(--accent-cyan);">Link</span></span>
+        </a>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-group-title">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="../dashboard.html" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="buses.html" class="nav-item">
+              <span class="nav-icon">🚍</span>
+              <span>Bus Fleet</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger,Driver">
+            <a href="routes.html" class="nav-item">
+              <span class="nav-icon">🗺️</span>
+              <span>Routes</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Driver,Passenger">
+            <a href="schedules.html" class="nav-item">
+              <span class="nav-icon">🕒</span>
+              <span>Schedules</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="drivers.html" class="nav-item">
+              <span class="nav-icon">👨‍✈️</span>
+              <span>Drivers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="passengers.html" class="nav-item">
+              <span class="nav-icon">👥</span>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="bookings.html" class="nav-item">
+              <span class="nav-icon">🎫</span>
+              <span>Bookings & Seats</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="payments.html" class="nav-item active">
+              <span class="nav-icon">💳</span>
+              <span>Payments</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="reports.html" class="nav-item">
+              <span class="nav-icon">📈</span>
+              <span>Analytics & Reports</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-logout js-logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation">☰</button>
+          <div id="api-status-badge" class="api-status-chip">
+            <span class="status-dot active"></span> Connecting...
+          </div>
+        </div>
+        <div class="navbar-right">
+          <div class="user-profile-menu">
+            <div class="user-avatar js-user-avatar">A</div>
+            <div class="user-meta">
+              <span class="user-name js-user-name">System Admin</span>
+              <span class="user-role-badge js-user-role">Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <div class="page-header">
+          <div class="page-title-wrap">
+            <h1><span>💳</span> Payment & Revenue Ledger</h1>
+            <p>Track passenger payments across Credit Card, Mobile Pay, Bank Wire, and Cash.</p>
+          </div>
+          <div class="page-actions">
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-sm); padding: 0.5rem 1rem;">
+              <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Total Settled</span>
+              <div id="payment-total-sum" style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--success);">$0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="payment-search-input" class="search-input" placeholder="Search by transaction reference or passenger...">
+          </div>
+
+          <div class="filter-group">
+            <select id="payment-method-filter" class="filter-select">
+              <option value="all">All Methods</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Mobile Payment">Mobile Payment</option>
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+
+            <select id="payment-status-filter" class="filter-select">
+              <option value="all">All Statuses</option>
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
+            </select>
+
+            <span id="payment-count-badge" class="badge badge-info">-- Transactions</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Transaction Ref</th>
+                <th>Passenger / Booking</th>
+                <th>Amount</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+                <th>Receipt</th>
+              </tr>
+            </thead>
+            <tbody id="payments-table-body">
+              <!-- Rendered via payments.js -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Receipt Details Modal -->
+  <div id="receipt-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 460px;">
+      <div class="modal-header">
+        <h2 class="modal-title">🧾 Transaction Receipt</h2>
+        <button class="modal-close" onclick="closeModal('receipt-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.5rem;">
+          <div style="text-align: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1rem;">
+            <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🚌 TransLink Transit</div>
+            <div style="font-size: 0.8rem; color: var(--text-dim);">Official Payment Voucher</div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Reference:</span>
+            <code id="receipt-txn">TXN-0000000</code>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Payer Name:</span>
+            <strong id="receipt-passenger">Passenger</strong>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Booking Reference:</span>
+            <span id="receipt-booking">TRIP-00000</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Method:</span>
+            <span id="receipt-method">Credit Card</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Timestamp:</span>
+            <span id="receipt-date">2026-10-04 12:00</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-subtle); padding-top: 1rem; margin-top: 1rem;">
+            <span style="font-weight: 700; font-size: 1rem;">Amount Settled:</span>
+            <strong id="receipt-amount" style="font-family: var(--font-heading); font-size: 1.25rem; color: var(--success);">$0.00</strong>
+          </div>
+          <div style="text-align: right; margin-top: 0.25rem;">
+            <span id="receipt-status" class="badge badge-success">Completed</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('receipt-modal')">Close</button>
+        <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ Print Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/payments.js"></script>
+</body>
+</html>
