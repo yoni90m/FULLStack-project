@@ -84,13 +84,13 @@ class BookingService:
         Schedule.decrement_seats(schedule_id)
 
         # 8. Record payment transaction
-        payment_method = data.get('payment_method', 'Credit Card')
+        payment_method = data.get('payment_method', 'Telebirr')
         fare_amount = float(schedule.get('fare', 25.00))
         payment_id, txn_ref = Payment.create(
             booking_id=booking_id,
             amount=fare_amount,
             payment_method=payment_method,
-            payment_status='Completed'
+            payment_status=data.get('payment_status', 'Completed')
         )
 
         result_data = {

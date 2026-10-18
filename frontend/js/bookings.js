@@ -120,10 +120,10 @@ function filterAndRenderBookings() {
           💺 Seat ${escapeHtml(b.seat_number)}
         </span>
       </td>
-      <td><strong>$${parseFloat(b.fare || 35).toFixed(2)}</strong></td>
+      <td><strong>ETB ${parseFloat(b.fare || 35).toFixed(2)}</strong></td>
       <td>
         <span class="badge ${b.payment_status === 'Completed' ? 'badge-success' : 'badge-warning'}">
-          ${escapeHtml(b.payment_status || 'Pending')}
+          ${escapeHtml(b.payment_method || 'Telebirr')} • ${escapeHtml(b.payment_status || 'Pending')}
         </span>
       </td>
       <td>
@@ -147,6 +147,17 @@ function filterAndRenderBookings() {
   `).join('');
 }
 
+function onPaymentMethodChanged(method) {
+  const panelTelebirr = document.getElementById('panel-telebirr');
+  const panelMobileBanking = document.getElementById('panel-mobile-banking');
+  const panelCash = document.getElementById('panel-cash');
+
+  if (panelTelebirr) panelTelebirr.style.display = (method === 'Telebirr') ? 'block' : 'none';
+  if (panelMobileBanking) panelMobileBanking.style.display = (method === 'Mobile Banking') ? 'block' : 'none';
+  if (panelCash) panelCash.style.display = (method === 'Cash') ? 'block' : 'none';
+}
+window.onPaymentMethodChanged = onPaymentMethodChanged;
+
 function openNewBookingModal(preselectedScheduleId = null) {
   const schedSelect = document.getElementById('book-schedule-select');
   const passSelect = document.getElementById('book-passenger-select');
@@ -156,7 +167,7 @@ function openNewBookingModal(preselectedScheduleId = null) {
     schedSelect.innerHTML = '<option value="">-- Choose Schedule / Trip --</option>' +
       allSchedules
         .filter(s => s.status === 'Scheduled' && s.available_seats > 0)
-        .map(s => `<option value="${s.schedule_id}">${s.route_name || (s.origin + ' → ' + s.destination)} | ${formatDateTime(s.departure_time)} ($${s.fare})</option>`)
+        .map(s => `<option value="${s.schedule_id}">${s.route_name || (s.origin + ' → ' + s.destination)} | ${formatDateTime(s.departure_time)} (ETB ${s.fare})</option>`)
         .join('');
 
     if (preselectedScheduleId) {
@@ -173,8 +184,14 @@ function openNewBookingModal(preselectedScheduleId = null) {
   }
 
   document.getElementById('seat-selection-display').textContent = 'None';
-  document.getElementById('summary-fare').textContent = '$0.00';
-  document.getElementById('summary-total').textContent = '$0.00';
+  document.getElementById('summary-fare').textContent = 'ETB 0.00';
+  document.getElementById('summary-total').textContent = 'ETB 0.00';
+
+  const methodSelect = document.getElementById('book-payment-method');
+  if (methodSelect) {
+    methodSelect.value = 'Telebirr';
+    onPaymentMethodChanged('Telebirr');
+  }
 
   if (preselectedScheduleId) {
     onScheduleSelected(preselectedScheduleId);
@@ -200,8 +217,8 @@ function onScheduleSelected(scheduleId) {
   }
 
   const fare = parseFloat(currentSelectedSchedule.fare || 35.00);
-  document.getElementById('summary-fare').textContent = `$${fare.toFixed(2)}`;
-  document.getElementById('summary-total').textContent = `$${fare.toFixed(2)}`;
+  document.getElementById('summary-fare').textContent = `ETB ${fare.toFixed(2)}`;
+  document.getElementById('summary-total').textContent = `ETB ${fare.toFixed(2)}`;
 
   renderSeatMap(currentSelectedSchedule);
 }
@@ -288,7 +305,9 @@ async function handleCreateBookingSubmit(e) {
     schedule_id: schedId,
     passenger_id: passId,
     seat_number: currentSelectedSeat,
-    payment_method: paymentMethod
+    payment_method: paymentMethod,
+    phone_number: paymentMethod === 'Telebirr' ? (document.getElementById('telebirr-phone')?.value || '') : '',
+    bank_name: paymentMethod === 'Mobile Banking' ? (document.getElementById('mobile-banking-bank')?.value || '') : ''
   };
 
   try {
@@ -298,7 +317,8 @@ async function handleCreateBookingSubmit(e) {
     });
 
     if (res.success) {
-      showToast('success', 'Booking Confirmed!', `Seat ${currentSelectedSeat} booked successfully!`);
+      const channelMsg = paymentMethod === 'Telebirr' ? 'Telebirr payment approved.' : (paymentMethod === 'Mobile Banking' ? 'Mobile Banking verified.' : 'Cash payment recorded.');
+      showToast('success', 'Booking Confirmed!', `Seat ${currentSelectedSeat} booked successfully! ${channelMsg}`);
       closeModal('booking-modal');
       loadBookingData();
       if (res.data && res.data.booking_id) {
@@ -345,7 +365,7 @@ function viewTicketModal(bookingId) {
   document.getElementById('ticket-bus').textContent = b.bus_number || 'Express Coach';
   document.getElementById('ticket-seat').textContent = b.seat_number;
   document.getElementById('ticket-departure').textContent = formatDateTime(b.departure_time);
-  document.getElementById('ticket-fare').textContent = `$${parseFloat(b.fare || 35).toFixed(2)}`;
+  document.getElementById('ticket-fare').textContent = `ETB ${parseFloat(b.fare || 35).toFixed(2)}`;
   document.getElementById('ticket-status').textContent = b.booking_status;
 
   openModal('ticket-modal');

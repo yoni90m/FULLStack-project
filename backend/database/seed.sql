@@ -91,9 +91,9 @@ INSERT INTO `bookings` (`booking_id`, `booking_reference`, `passenger_id`, `sche
 
 -- 8. PAYMENTS
 INSERT INTO `payments` (`payment_id`, `booking_id`, `amount`, `payment_method`, `payment_status`, `payment_date`, `transaction_reference`) VALUES
-(1, 1, 35.00, 'Credit Card', 'Completed', DATE_SUB(NOW(), INTERVAL 2 DAY), 'TXN-CC-9901823'),
-(2, 2, 35.00, 'Mobile Payment', 'Completed', DATE_SUB(NOW(), INTERVAL 1 DAY), 'TXN-MP-7729104'),
-(3, 3, 35.00, 'Cash', 'Completed', DATE_SUB(NOW(), INTERVAL 6 HOUR), 'TXN-CS-1102934'),
-(4, 4, 55.00, 'Credit Card', 'Completed', DATE_SUB(NOW(), INTERVAL 12 HOUR), 'TXN-CC-8829105'),
-(5, 5, 55.00, 'Bank Transfer', 'Completed', DATE_SUB(NOW(), INTERVAL 5 HOUR), 'TXN-BT-4491028'),
-(6, 6, 28.00, 'Mobile Payment', 'Completed', DATE_SUB(NOW(), INTERVAL 3 HOUR), 'TXN-MP-6628190');
+(1, 1, 650.00, 'Telebirr', 'Completed', DATE_SUB(NOW(), INTERVAL 2 DAY), 'TXN-TB-9901823'),
+(2, 2, 650.00, 'Mobile Banking', 'Completed', DATE_SUB(NOW(), INTERVAL 1 DAY), 'TXN-MB-7729104'),
+(3, 3, 650.00, 'Cash', 'Completed', DATE_SUB(NOW(), INTERVAL 6 HOUR), 'TXN-CS-1102934'),
+(4, 4, 320.00, 'Telebirr', 'Completed', DATE_SUB(NOW(), INTERVAL 12 HOUR), 'TXN-TB-8829105'),
+(5, 5, 320.00, 'Mobile Banking', 'Completed', DATE_SUB(NOW(), INTERVAL 5 HOUR), 'TXN-MB-4491028'),
+(6, 6, 850.00, 'Cash', 'Completed', DATE_SUB(NOW(), INTERVAL 3 HOUR), 'TXN-CS-6628190');

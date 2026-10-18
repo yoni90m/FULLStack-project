@@ -71,3 +71,68 @@ class Passenger:
     def update_status(passenger_id, status):
         query = "UPDATE passengers SET status = %s WHERE passenger_id = %s"
         return execute_query(query, (status, passenger_id), commit=True)
+
+    @staticmethod
+    def get_by_schedule_id(schedule_id):
+        query = """
+            SELECT 
+                p.name, p.phone,
+                b.booking_reference, b.seat_number, b.booking_status
+            FROM bookings b
+            JOIN passengers p ON b.passenger_id = p.passenger_id
+            WHERE b.schedule_id = %s AND b.booking_status != 'Cancelled'
+            ORDER BY b.seat_number ASC
+        """
+        rows = execute_query(query, (schedule_id,), fetch_all=True)
+        return [serialize_row(r) for r in (rows or [])]
+
+    @staticmethod
+    def get_all_registered():
+        """
+        Retrieve all registered passengers (regardless of booking status).
+        Includes their linked user account info if available.
+        """
+        query = """
+            SELECT 
+                p.passenger_id,
+                p.user_id,
+                p.name,
+                p.phone,
+                p.email,
+                p.status,
+                u.username,
+                u.role,
+                u.created_at as registered_at
+            FROM passengers p
+            LEFT JOIN users u ON p.user_id = u.user_id
+            ORDER BY p.passenger_id DESC
+        """
+        rows = execute_query(query, fetch_all=True)
+        return [serialize_row(r) for r in (rows or [])]
+
+    @staticmethod
+    def update(passenger_id, name=None, phone=None, email=None):
+        """Update passenger profile fields."""
+        updates = []
+        params = []
+        if name:
+            updates.append("name = %s")
+            params.append(name)
+        if phone:
+            updates.append("phone = %s")
+            params.append(phone)
+        if email:
+            updates.append("email = %s")
+            params.append(email)
+        if not updates:
+            return False
+        params.append(passenger_id)
+        query = f"UPDATE passengers SET {', '.join(updates)} WHERE passenger_id = %s"
+        return execute_query(query, tuple(params), commit=True)
+
+    @staticmethod
+    def check_email_exists(email):
+        """Check if a passenger with this email already exists."""
+        query = "SELECT passenger_id FROM passengers WHERE email = %s"
+        row = execute_query(query, (email,), fetch_one=True)
+        return row is not None

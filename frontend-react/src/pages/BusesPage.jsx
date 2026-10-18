@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Table, Button, Badge, Modal, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const initialBuses = [
   { bus_id: 1, bus_number: 'BUS-101', plate_number: 'NY-TR-8801', model: 'Volvo 9700 Luxury Cruiser', capacity: 40, status: 'Assigned' },
@@ -21,6 +22,7 @@ const statusVariant = {
 
 const BusesPage = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [buses, setBuses] = useState(initialBuses);
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
@@ -50,12 +52,14 @@ const BusesPage = () => {
   return (
     <Container fluid className="p-4">
       <Row className="mb-4 align-items-center">
-        <Col><h4 className="fw-bold">🚍 Bus Fleet Management</h4></Col>
+        <Col><h4 className="fw-bold">{isAdmin ? '🚍 Bus Fleet Management' : '🚍 Intercity Bus Fleet'}</h4></Col>
         <Col xs="auto" className="d-flex gap-2">
           <Button variant="outline-info" className="rounded-pill px-3" onClick={() => navigate('/tracking')}>
             📍 Live Map Tracker
           </Button>
-          <Button variant="primary" className="rounded-pill px-4" onClick={openAdd}>+ Add New Bus</Button>
+          {isAdmin && (
+            <Button variant="primary" className="rounded-pill px-4" onClick={openAdd}>+ Add New Bus</Button>
+          )}
         </Col>
       </Row>
       <Card className="border-0 shadow-sm rounded-4">
@@ -85,8 +89,16 @@ const BusesPage = () => {
                       <Button size="sm" variant="outline-info" className="me-2 rounded-pill" onClick={() => navigate('/tracking')}>
                         📍 Track
                       </Button>
-                      <Button size="sm" variant="outline-primary" className="me-2 rounded-pill" onClick={() => openEdit(bus)}>✏️ Edit</Button>
-                      <Button size="sm" variant="outline-danger" className="rounded-pill" onClick={() => handleDelete(bus.bus_id)}>🗑️</Button>
+                      {isAdmin ? (
+                        <>
+                          <Button size="sm" variant="outline-primary" className="me-2 rounded-pill" onClick={() => openEdit(bus)}>✏️ Edit</Button>
+                          <Button size="sm" variant="outline-danger" className="rounded-pill" onClick={() => handleDelete(bus.bus_id)}>🗑️</Button>
+                        </>
+                      ) : (
+                        <Button size="sm" variant="outline-success" className="rounded-pill" onClick={() => navigate('/bookings')}>
+                          💺 Book Seat
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}

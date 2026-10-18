@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button, Offcanvas, Container } from 'react-bootstrap';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+import LanguageSelector from './components/LanguageSelector';
 import ProtectedRoute from './components/ProtectedRoute';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
@@ -10,12 +12,15 @@ import LoginPage from './pages/LoginPage';
 import LiveTrackingPage from './pages/LiveTrackingPage';
 import BusesPage from './pages/BusesPage';
 import RoutesPage from './pages/RoutesPage';
-import SchedulesPage from './pages/SchedulesPage';
+import RegisterPage from './pages/RegisterPage';
 import BookingsPage from './pages/BookingsPage';
 import DriversPage from './pages/DriversPage';
 import PassengersPage from './pages/PassengersPage';
 import PaymentsPage from './pages/PaymentsPage';
 import ReportsPage from './pages/ReportsPage';
+import SchedulesPage from './pages/SchedulesPage';
+import SettingsPage from './pages/SettingsPage';
+import NotFoundPage from './pages/NotFoundPage';
 import './App.css';
 
 function AppLayout() {
@@ -39,6 +44,9 @@ function AppLayout() {
   if (location.pathname === '/login') {
     return <LoginPage />;
   }
+  if (location.pathname === '/register') {
+    return <RegisterPage />;
+  }
 
   return (
     <div className="app-bg d-flex">
@@ -48,14 +56,14 @@ function AppLayout() {
       </div>
 
       {/* Mobile Offcanvas Sidebar */}
-      <Offcanvas show={showSidebar} onHide={handleClose} responsive="lg" className="bg-dark text-white" style={{ width: '260px' }}>
+      <Offcanvas show={showSidebar} onHide={handleClose} className="d-lg-none bg-dark text-white" style={{ width: '260px' }}>
         <Offcanvas.Header closeButton closeVariant="white">
           <Offcanvas.Title className="fw-bold text-primary">
             Trans<span className="text-info">Link</span>
           </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="p-0">
-          <Sidebar />
+          <Sidebar onNavigate={handleClose} />
         </Offcanvas.Body>
       </Offcanvas>
 
@@ -67,6 +75,7 @@ function AppLayout() {
             <h5 className="mb-0 fw-bold text-white d-none d-sm-block">TransLink Management</h5>
           </div>
           <div className="d-flex align-items-center gap-3">
+            <LanguageSelector />
             <span className="badge bg-success bg-opacity-25 text-success rounded-pill px-3 py-2 fw-medium border border-success" style={{ fontSize: '0.75rem' }}>
               ● Flask API Live
             </span>
@@ -100,6 +109,8 @@ function AppLayout() {
           <Route path="/passengers" element={<ProtectedRoute roles={['Admin']}><PassengersPage /></ProtectedRoute>} />
           <Route path="/payments" element={<ProtectedRoute roles={['Admin']}><PaymentsPage /></ProtectedRoute>} />
           <Route path="/reports" element={<ProtectedRoute roles={['Admin']}><ReportsPage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
     </div>
@@ -109,9 +120,11 @@ function AppLayout() {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <AppLayout />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppLayout />
+        </AuthProvider>
+      </LanguageProvider>
     </Router>
   );
 }

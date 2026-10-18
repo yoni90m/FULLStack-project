@@ -37,3 +37,25 @@ class User:
             return check_password_hash(stored_password, provided_password)
         except Exception:
             return False
+
+    @staticmethod
+    def update_password(user_id, new_password):
+        hashed_pw = generate_password_hash(new_password)
+        query = "UPDATE users SET password = %s WHERE user_id = %s"
+        return execute_query(query, (hashed_pw, user_id), commit=True)
+
+    @staticmethod
+    def update_profile(user_id, email=None, username=None):
+        updates = []
+        params = []
+        if email:
+            updates.append("email = %s")
+            params.append(email)
+        if username:
+            updates.append("username = %s")
+            params.append(username)
+        if not updates:
+            return False
+        params.append(user_id)
+        query = f"UPDATE users SET {', '.join(updates)} WHERE user_id = %s"
+        return execute_query(query, tuple(params), commit=True)

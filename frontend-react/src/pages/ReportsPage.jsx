@@ -95,22 +95,18 @@ const ReportsPage = () => {
       <Row className="g-4">
         <Col md={6}>
           <Card className="border-0 shadow-sm rounded-4">
-            <Card.Header className="border-0 pt-4 pb-0"><h5 className="fw-bold">Payment Methods</h5></Card.Header>
+            <Card.Header className="border-0 pt-4 pb-0"><h5 className="fw-bold">Payment Methods Breakdown</h5></Card.Header>
             <Card.Body>
               <div className="mb-3">
-                <div className="d-flex justify-content-between mb-1"><span className="text-muted small">Credit Card</span><span className="fw-bold small">2 payments (33%)</span></div>
-                <ProgressBar variant="primary" now={33} style={{ height: '10px' }} className="rounded-pill" />
+                <div className="d-flex justify-content-between mb-1"><span className="text-muted small">🟢 Telebirr (Ethio Telecom)</span><span className="fw-bold small">3 payments (50%)</span></div>
+                <ProgressBar variant="success" now={50} style={{ height: '10px' }} className="rounded-pill" />
               </div>
               <div className="mb-3">
-                <div className="d-flex justify-content-between mb-1"><span className="text-muted small">Mobile Payment</span><span className="fw-bold small">2 payments (33%)</span></div>
+                <div className="d-flex justify-content-between mb-1"><span className="text-muted small">📱 Mobile Banking (CBE, Awash, BoA)</span><span className="fw-bold small">2 payments (33%)</span></div>
                 <ProgressBar variant="info" now={33} style={{ height: '10px' }} className="rounded-pill" />
               </div>
               <div className="mb-3">
-                <div className="d-flex justify-content-between mb-1"><span className="text-muted small">Cash</span><span className="fw-bold small">1 payment (17%)</span></div>
-                <ProgressBar variant="success" now={17} style={{ height: '10px' }} className="rounded-pill" />
-              </div>
-              <div>
-                <div className="d-flex justify-content-between mb-1"><span className="text-muted small">Bank Transfer</span><span className="fw-bold small">1 payment (17%)</span></div>
+                <div className="d-flex justify-content-between mb-1"><span className="text-muted small">💵 Cash (Terminal / On-Board)</span><span className="fw-bold small">1 payment (17%)</span></div>
                 <ProgressBar variant="warning" now={17} style={{ height: '10px' }} className="rounded-pill" />
               </div>
             </Card.Body>

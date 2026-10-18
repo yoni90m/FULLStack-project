@@ -41,11 +41,14 @@ class Payment:
         return serialize_row(row)
 
     @staticmethod
-    def create(booking_id, amount, payment_method="Credit Card", payment_status="Completed"):
+    def create(booking_id, amount, payment_method="Telebirr", payment_status="Completed"):
         prefix_map = {
-            "credit card": "TXN-CC",
-            "mobile payment": "TXN-MP",
+            "telebirr": "TXN-TB",
+            "mobile banking": "TXN-MB",
             "cash": "TXN-CS",
+            "cbe birr": "TXN-CBE",
+            "mobile payment": "TXN-MP",
+            "credit card": "TXN-CC",
             "bank transfer": "TXN-BT"
         }
         prefix = prefix_map.get(payment_method.lower(), "TXN")

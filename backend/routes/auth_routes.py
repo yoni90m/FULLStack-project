@@ -41,3 +41,55 @@ def me():
         "email": user["email"],
         "role": user["role"]
     })
+
+@auth_bp.route('/profile', methods=['PUT'])
+@auth_required
+def update_profile():
+    data = request.get_json() or {}
+    user_id = g.current_user["user_id"]
+    from backend.models.user import User
+    
+    email = data.get("email")
+    username = data.get("username")
+    
+    if email:
+        from backend.utils.validators import validate_email
+        valid, err = validate_email(email)
+        if not valid:
+            return json_response(False, err, status_code=400)
+            
+    success = User.update_profile(user_id, email=email, username=username)
+    if not success:
+        return json_response(False, "Failed to update profile or no changes provided.", status_code=400)
+        
+    return json_response(True, "Profile updated successfully.", {
+        "user_id": user_id,
+        "username": username or g.current_user["username"],
+        "email": email or g.current_user["email"]
+    })
+
+@auth_bp.route('/change-password', methods=['PUT'])
+@auth_required
+def change_password():
+    data = request.get_json() or {}
+    old_password = data.get("old_password", "")
+    new_password = data.get("new_password", "")
+    
+    if not old_password or not new_password:
+        return json_response(False, "Please provide both old and new passwords.", status_code=400)
+        
+    if len(new_password) < 6:
+        return json_response(False, "New password must be at least 6 characters long.", status_code=400)
+        
+    from backend.models.user import User
+    user = User.get_by_id(g.current_user["user_id"])
+    if not user:
+        return json_response(False, "User not found.", status_code=404)
+        
+    # Verify old password
+    user_with_pw = User.get_by_username_or_email(user["username"])
+    if not User.verify_password(user_with_pw["password"], old_password):
+        return json_response(False, "Current password is incorrect.", status_code=400)
+        
+    User.update_password(user["user_id"], new_password)
+    return json_response(True, "Password changed successfully.")

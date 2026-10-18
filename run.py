@@ -17,9 +17,15 @@ from backend.config import Config
 app = create_app()
 
 if __name__ == '__main__':
+    if '--reset-db' in sys.argv or '--refresh' in sys.argv:
+        from backend.database.connection import reset_database
+        print(" [TransLink] Refreshing and re-seeding database tables with Telebirr, Mobile Banking, and Cash...")
+        reset_database()
+
     print("=" * 65)
     print(" [TransLink] Bus Transportation Management System")
-    print(" Server running at: http://127.0.0.1:5000")
-    print(" REST API Base URL:  http://127.0.0.1:5000/api")
+    print(" Local Access:   http://127.0.0.1:5000")
+    print(" Network Access: http://0.0.0.0:5000")
+    print(" REST API URL:   http://127.0.0.1:5000/api")
     print("=" * 65)
-    app.run(host='127.0.0.1', port=5000, debug=Config.DEBUG, use_reloader=False)
+    app.run(host='0.0.0.0', port=5000, debug=Config.DEBUG, use_reloader=False)

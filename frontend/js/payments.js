@@ -61,7 +61,7 @@ function filterAndRenderPayments() {
   if (countBadge) countBadge.textContent = `${filtered.length} Transactions`;
 
   const sumTotal = filtered.reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
-  if (totalAmountBadge) totalAmountBadge.textContent = `$${sumTotal.toFixed(2)}`;
+  if (totalAmountBadge) totalAmountBadge.textContent = `ETB ${sumTotal.toFixed(2)}`;
 
   if (filtered.length === 0) {
     tableBody.innerHTML = `
@@ -90,11 +90,11 @@ function filterAndRenderPayments() {
       </td>
       <td>
         <span style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--success);">
-          $${parseFloat(p.amount).toFixed(2)}
+          ETB ${parseFloat(p.amount).toFixed(2)}
         </span>
       </td>
       <td>
-        <span class="badge badge-info">
+        <span class="badge ${getMethodBadgeClass(p.payment_method)}">
           ${getPaymentMethodIcon(p.payment_method)} ${escapeHtml(p.payment_method)}
         </span>
       </td>
@@ -113,15 +113,83 @@ function filterAndRenderPayments() {
   `).join('');
 }
 
+function getMethodBadgeClass(method) {
+  switch ((method || '').toLowerCase()) {
+    case 'telebirr': return 'badge-success';
+    case 'mobile banking': return 'badge-info';
+    case 'cash': return 'badge-warning';
+    default: return 'badge-info';
+  }
+}
+
 function getPaymentMethodIcon(method) {
   switch ((method || '').toLowerCase()) {
+    case 'telebirr': return '🟢📱';
+    case 'mobile banking': return '📱🏦';
+    case 'cash': return '💵';
     case 'credit card': return '💳';
     case 'mobile payment': return '📱';
-    case 'cash': return '💵';
     case 'bank transfer': return '🏦';
     default: return '💰';
   }
 }
+
+function openProcessPaymentModal() {
+  openModal('process-payment-modal');
+}
+window.openProcessPaymentModal = openProcessPaymentModal;
+
+function onProcessMethodChanged(method) {
+  const telebirrGroup = document.getElementById('pay-telebirr-group');
+  const bankGroup = document.getElementById('pay-bank-group');
+  const cashGroup = document.getElementById('pay-cash-group');
+
+  if (telebirrGroup) telebirrGroup.style.display = (method === 'Telebirr') ? 'block' : 'none';
+  if (bankGroup) bankGroup.style.display = (method === 'Mobile Banking') ? 'block' : 'none';
+  if (cashGroup) cashGroup.style.display = (method === 'Cash') ? 'block' : 'none';
+}
+window.onProcessMethodChanged = onProcessMethodChanged;
+
+async function handleProcessPaymentSubmit(e) {
+  e.preventDefault();
+
+  const bookingId = parseInt(document.getElementById('pay-booking-id')?.value, 10);
+  const amount = parseFloat(document.getElementById('pay-amount')?.value);
+  const method = document.getElementById('pay-method')?.value;
+  const phoneNumber = document.getElementById('pay-telebirr-phone')?.value;
+  const bankName = document.getElementById('pay-bank-name')?.value;
+
+  if (!bookingId || isNaN(amount) || amount <= 0) {
+    showToast('error', 'Validation Error', 'Please provide a valid Booking ID and Amount.');
+    return;
+  }
+
+  const payload = {
+    booking_id: bookingId,
+    amount: amount,
+    payment_method: method,
+    phone_number: method === 'Telebirr' ? phoneNumber : '',
+    bank_name: method === 'Mobile Banking' ? bankName : ''
+  };
+
+  try {
+    const res = await apiFetch('/payments', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    if (res.success) {
+      showToast('success', 'Payment Successful!', `Recorded ${method} transaction: ${res.data.transaction_reference}`);
+      closeModal('process-payment-modal');
+      loadPayments();
+    } else {
+      showToast('error', 'Payment Failed', res.message || 'Could not process transaction.');
+    }
+  } catch (err) {
+    showToast('error', 'Network Error', 'Failed to communicate with payment gateway.');
+  }
+}
+window.handleProcessPaymentSubmit = handleProcessPaymentSubmit;
 
 function viewReceiptModal(paymentId) {
   const p = allPayments.find(item => item.payment_id === paymentId);
@@ -130,8 +198,8 @@ function viewReceiptModal(paymentId) {
   document.getElementById('receipt-txn').textContent = p.transaction_reference;
   document.getElementById('receipt-passenger').textContent = p.passenger_name || 'Guest Passenger';
   document.getElementById('receipt-booking').textContent = p.booking_reference || 'N/A';
-  document.getElementById('receipt-amount').textContent = `$${parseFloat(p.amount).toFixed(2)}`;
-  document.getElementById('receipt-method').textContent = p.payment_method;
+  document.getElementById('receipt-amount').textContent = `ETB ${parseFloat(p.amount).toFixed(2)}`;
+  document.getElementById('receipt-method').textContent = `${getPaymentMethodIcon(p.payment_method)} ${p.payment_method}`;
   document.getElementById('receipt-date').textContent = p.payment_date;
   document.getElementById('receipt-status').textContent = p.payment_status;
 

@@ -1,0 +1,129 @@
+/* Interactive Bus Coach Seat Map & Bookings Styling */
+.bus-coach-frame {
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 20px;
+  padding: 1.5rem;
+  max-width: 440px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.bus-front-indicator {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  color: #94a3b8;
+  padding: 0.5rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.5px;
+}
+
+.seat-grid-coach {
+  display: grid;
+  grid-template-columns: 46px 46px 28px 46px 46px;
+  gap: 0.6rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.aisle-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: #64748b;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.seat-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.12);
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.seat-btn.available {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.seat-btn.available:hover {
+  background: #10b981;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.seat-btn.selected {
+  background: #06b6d4 !important;
+  border-color: #22d3ee !important;
+  color: #042f2e !important;
+  transform: scale(1.08);
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.6);
+}
+
+.seat-btn.booked {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  cursor: not-allowed;
+  opacity: 0.45;
+  filter: grayscale(40%);
+}
+
+.seat-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.seat-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #cbd5e1;
+}
+
+.seat-legend-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.seat-legend-box.available {
+  background: rgba(16, 185, 129, 0.25);
+  border: 1px solid #10b981;
+}
+
+.seat-legend-box.selected {
+  background: #06b6d4;
+  border: 1px solid #22d3ee;
+}
+
+.seat-legend-box.booked {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+}

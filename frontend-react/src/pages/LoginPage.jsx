@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Login.css';
 import logo from '../assets/translink_logo.jpg';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const registeredMsg = location.state?.registeredMsg;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -46,6 +49,13 @@ const LoginPage = () => {
           </h2>
           <p className="login-subtitle">Sign in to your account</p>
         </div>
+
+        {registeredMsg && (
+          <div className="login-alert success">
+            <span className="alert-icon">🎉</span>
+            {registeredMsg}
+          </div>
+        )}
 
         {error && (
           <div className="login-alert">
@@ -99,6 +109,13 @@ const LoginPage = () => {
               'Sign In'
             )}
           </button>
+
+          <div className="login-register-prompt">
+            <span>Don't have an account? </span>
+            <Link to="/register" className="register-link">
+              Register here
+            </Link>
+          </div>
         </form>
 
         <div className="login-footer">

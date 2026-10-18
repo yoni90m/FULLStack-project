@@ -53,12 +53,12 @@ const DEFAULT_SEED_DATA = {
     { booking_id: 6, booking_reference: 'TRIP-88206', passenger_id: 2, schedule_id: 5, seat_number: '3A', booking_date: '2026-10-04 18:00:00', booking_status: 'Confirmed' }
   ],
   payments: [
-    { payment_id: 1, booking_id: 1, amount: 35.00, payment_method: 'Credit Card', payment_status: 'Completed', payment_date: '2026-10-03 10:22:00', transaction_reference: 'TXN-CC-9901823' },
-    { payment_id: 2, booking_id: 2, amount: 35.00, payment_method: 'Mobile Payment', payment_status: 'Completed', payment_date: '2026-10-04 11:32:00', transaction_reference: 'TXN-MP-7729104' },
-    { payment_id: 3, booking_id: 3, amount: 35.00, payment_method: 'Cash', payment_status: 'Completed', payment_date: '2026-10-04 15:05:00', transaction_reference: 'TXN-CS-1102934' },
-    { payment_id: 4, booking_id: 4, amount: 55.00, payment_method: 'Credit Card', payment_status: 'Completed', payment_date: '2026-10-04 09:18:00', transaction_reference: 'TXN-CC-8829105' },
-    { payment_id: 5, booking_id: 5, amount: 55.00, payment_method: 'Bank Transfer', payment_status: 'Completed', payment_date: '2026-10-04 16:50:00', transaction_reference: 'TXN-BT-4491028' },
-    { payment_id: 6, booking_id: 6, amount: 28.00, payment_method: 'Mobile Payment', payment_status: 'Completed', payment_date: '2026-10-04 18:05:00', transaction_reference: 'TXN-MP-6628190' }
+    { payment_id: 1, booking_id: 1, amount: 650.00, payment_method: 'Telebirr', payment_status: 'Completed', payment_date: '2026-10-03 10:22:00', transaction_reference: 'TXN-TB-9901823' },
+    { payment_id: 2, booking_id: 2, amount: 650.00, payment_method: 'Mobile Banking', payment_status: 'Completed', payment_date: '2026-10-04 11:32:00', transaction_reference: 'TXN-MB-7729104' },
+    { payment_id: 3, booking_id: 3, amount: 650.00, payment_method: 'Cash', payment_status: 'Completed', payment_date: '2026-10-04 15:05:00', transaction_reference: 'TXN-CS-1102934' },
+    { payment_id: 4, booking_id: 4, amount: 320.00, payment_method: 'Telebirr', payment_status: 'Completed', payment_date: '2026-10-04 09:18:00', transaction_reference: 'TXN-TB-8829105' },
+    { payment_id: 5, booking_id: 5, amount: 320.00, payment_method: 'Mobile Banking', payment_status: 'Completed', payment_date: '2026-10-04 16:50:00', transaction_reference: 'TXN-MB-4491028' },
+    { payment_id: 6, booking_id: 6, amount: 850.00, payment_method: 'Cash', payment_status: 'Completed', payment_date: '2026-10-04 18:05:00', transaction_reference: 'TXN-CS-6628190' }
   ]
 };
 
@@ -494,14 +494,16 @@ function handleMockApi(endpoint, options) {
 
       // Create linked payment record
       const fareAmount = store.schedules[schIdx] ? store.schedules[schIdx].fare : 35.00;
+      const method = body.payment_method || 'Telebirr';
+      const prefix = method === 'Telebirr' ? 'TXN-TB' : (method === 'Mobile Banking' ? 'TXN-MB' : 'TXN-CS');
       const newPayment = {
         payment_id: Date.now() + 1,
         booking_id: newBooking.booking_id,
         amount: fareAmount,
-        payment_method: body.payment_method || 'Credit Card',
+        payment_method: method,
         payment_status: 'Completed',
         payment_date: new Date().toISOString().replace('T', ' ').substring(0, 19),
-        transaction_reference: `TXN-${Math.floor(1000000 + Math.random() * 9000000)}`
+        transaction_reference: `${prefix}-${Math.floor(1000000 + Math.random() * 9000000)}`
       };
       store.payments.push(newPayment);
 
@@ -559,14 +561,16 @@ function handleMockApi(endpoint, options) {
       return { success: true, data: enriched };
     }
     if (method === 'POST') {
+      const method = body.payment_method || 'Telebirr';
+      const prefix = method === 'Telebirr' ? 'TXN-TB' : (method === 'Mobile Banking' ? 'TXN-MB' : 'TXN-CS');
       const newPayment = {
         payment_id: Date.now(),
         booking_id: parseInt(body.booking_id, 10),
         amount: parseFloat(body.amount) || 0,
-        payment_method: body.payment_method || 'Cash',
+        payment_method: method,
         payment_status: body.payment_status || 'Completed',
         payment_date: new Date().toISOString().replace('T', ' ').substring(0, 19),
-        transaction_reference: `TXN-${Math.floor(1000000 + Math.random() * 9000000)}`
+        transaction_reference: `${prefix}-${Math.floor(1000000 + Math.random() * 9000000)}`
       };
       store.payments.push(newPayment);
       saveLocalStore(store);
@@ -596,6 +600,178 @@ function handleMockApi(endpoint, options) {
         total_revenue: totalRevenue.toFixed(2),
         active_buses: store.buses.filter(b => b.status === 'Assigned' || b.status === 'Available').length
       }
+    };
+  }
+
+  // 10. TRACKING (Live fleet coordinates & telemetry)
+  if (resource === 'tracking') {
+    const fleetVehicles = [
+      {
+        bus_id: 1,
+        bus_number: "BUS-101",
+        plate_number: "NY-TR-8801",
+        vehicle_type: "Volvo 9700 Luxury Cruiser",
+        driver_name: "Abebe Bekele",
+        driver_phone: "+251 911 234 567",
+        route_id: 1,
+        route_name: "Addis Ababa → Bahir Dar",
+        origin: "Addis Ababa",
+        destination: "Bahir Dar",
+        status: "In Transit",
+        current_location: {
+          lat: 9.0300,
+          lng: 38.7400,
+          address: "Gojjam Road, near Sululta"
+        },
+        speed: 68,
+        heading: 340,
+        fuel_percent: 84,
+        passengers: 38,
+        capacity: 40,
+        eta: "4h 15m",
+        next_stop: "Dejen Bridge",
+        progress: 42
+      },
+      {
+        bus_id: 2,
+        bus_number: "BUS-102",
+        plate_number: "MA-TR-4422",
+        vehicle_type: "Mercedes-Benz Tourismo",
+        driver_name: "Samuel Tadesse",
+        driver_phone: "+251 922 345 678",
+        route_id: 2,
+        route_name: "Addis Ababa → Hawassa",
+        origin: "Addis Ababa",
+        destination: "Hawassa",
+        status: "In Transit",
+        current_location: {
+          lat: 8.0000,
+          lng: 38.8000,
+          address: "Expressway near Mojo"
+        },
+        speed: 78,
+        heading: 170,
+        fuel_percent: 65,
+        passengers: 32,
+        capacity: 36,
+        eta: "1h 45m",
+        next_stop: "Batu (Ziway)",
+        progress: 68
+      },
+      {
+        bus_id: 3,
+        bus_number: "BUS-103",
+        plate_number: "CA-TR-1290",
+        vehicle_type: "Scania Touring HD",
+        driver_name: "Mulugeta Haile",
+        driver_phone: "+251 933 456 789",
+        route_id: 3,
+        route_name: "Addis Ababa → Dire Dawa",
+        origin: "Addis Ababa",
+        destination: "Dire Dawa",
+        status: "In Transit",
+        current_location: {
+          lat: 8.9800,
+          lng: 40.0500,
+          address: "Awash National Park Bypass"
+        },
+        speed: 62,
+        heading: 85,
+        fuel_percent: 55,
+        passengers: 41,
+        capacity: 44,
+        eta: "3h 10m",
+        next_stop: "Mieso Station",
+        progress: 54
+      },
+      {
+        bus_id: 4,
+        bus_number: "BUS-104",
+        plate_number: "IL-TR-9031",
+        vehicle_type: "MCI J4500 Coach",
+        driver_name: "Dawit Tesfaye",
+        driver_phone: "+251 944 567 890",
+        route_id: 5,
+        route_name: "Addis Ababa → Jimma",
+        origin: "Addis Ababa",
+        destination: "Jimma",
+        status: "In Transit",
+        current_location: {
+          lat: 8.5400,
+          lng: 37.9700,
+          address: "Welkite Highway"
+        },
+        speed: 55,
+        heading: 235,
+        fuel_percent: 72,
+        passengers: 35,
+        capacity: 40,
+        eta: "2h 30m",
+        next_stop: "Abelti River Crossing",
+        progress: 48
+      },
+      {
+        bus_id: 5,
+        bus_number: "BUS-105",
+        plate_number: "WA-TR-3384",
+        vehicle_type: "Prevost H3-45 Executive",
+        driver_name: "Kassahun Girma",
+        driver_phone: "+251 955 678 901",
+        route_id: 0,
+        route_name: "Central Maintenance Depot",
+        origin: "Addis Ababa Depot",
+        destination: "Addis Ababa Depot",
+        status: "Maintenance",
+        current_location: {
+          lat: 9.0050,
+          lng: 38.7850,
+          address: "Bole Maintenance Center"
+        },
+        speed: 0,
+        heading: 0,
+        fuel_percent: 40,
+        passengers: 0,
+        capacity: 32,
+        eta: "Stationary (Service)",
+        next_stop: "Bay 4 Inspection",
+        progress: 0
+      },
+      {
+        bus_id: 6,
+        bus_number: "BUS-106",
+        plate_number: "TX-TR-5519",
+        vehicle_type: "Setra ComfortClass S 515",
+        driver_name: "Ermias Wolde",
+        driver_phone: "+251 966 789 012",
+        route_id: 6,
+        route_name: "Addis Ababa → Debre Mark'os",
+        origin: "Addis Ababa",
+        destination: "Debre Mark'os",
+        status: "Idling / Boarding",
+        current_location: {
+          lat: 9.0450,
+          lng: 38.7550,
+          address: "Autobis Tera Terminal"
+        },
+        speed: 0,
+        heading: 15,
+        fuel_percent: 95,
+        passengers: 18,
+        capacity: 40,
+        eta: "Departs in 15m",
+        next_stop: "Sululta",
+        progress: 10
+      }
+    ];
+
+    if (id) {
+      const v = fleetVehicles.find(x => x.bus_id === id);
+      return v ? { success: true, data: v } : { success: false, message: 'Vehicle not found' };
+    }
+    return {
+      success: true,
+      message: 'Live vehicle locations retrieved successfully.',
+      data: { vehicles: fleetVehicles, timestamp: Date.now() }
     };
   }
 

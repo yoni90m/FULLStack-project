@@ -1,5 +1,6 @@
 import os
 import secrets
+import re
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -15,18 +16,18 @@ class Config:
     FLASK_ENV = os.getenv('FLASK_ENV', 'production')
     DEBUG = FLASK_ENV == 'development'
 
-    # Database configuration — SQLite3
-    DB_SQLITE_PATH = os.getenv('DB_SQLITE_PATH', str(root_dir / 'database' / 'bus_transportation.sqlite3'))
+    # PostgreSQL Configuration
+    DB_HOST = os.getenv('DB_HOST', 'localhost')
+    DB_PORT = int(os.getenv('DB_PORT', 5432))
+    DB_NAME = os.getenv('DB_NAME', 'bus_transportation')
+    DB_USER = os.getenv('DB_USER', 'postgres')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', 'Yo08541633&')
 
     # Security settings
     JWT_EXPIRY_HOURS = int(os.getenv('JWT_EXPIRY_HOURS', 24))
     RATE_LIMIT_DEFAULT = os.getenv('RATE_LIMIT_DEFAULT', '100 per hour')
     RATE_LIMIT_AUTH = os.getenv('RATE_LIMIT_AUTH', '10 per minute')
+
     ALLOWED_ORIGINS = [
-        origin.strip()
-        for origin in os.getenv(
-            'ALLOWED_ORIGINS',
-            'http://localhost:5173,http://localhost:5000,http://127.0.0.1:5173,http://127.0.0.1:5000'
-        ).split(',')
-        if origin.strip()
+        re.compile(r'^https?://(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$')
     ]

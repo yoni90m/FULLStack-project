@@ -233,3 +233,61 @@
 .back-link:hover {
   color: #3b82f6;
 }
+
+/* Register Prompt & Secondary Button */
+.login-register-prompt {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-top: 16px;
+}
+
+.login-register-prompt .register-link {
+  color: #3b82f6;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.login-register-prompt .register-link:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.register-btn-wrapper {
+  margin-top: 12px;
+}
+
+.btn-register-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  color: #93c5fd;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.btn-register-outline:hover {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: #3b82f6;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.login-alert.success {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+}
+
+.register-card {
+  max-width: 540px;
+}

@@ -92,3 +92,26 @@ class Schedule:
     def delete(schedule_id):
         query = "DELETE FROM schedules WHERE schedule_id = %s"
         return execute_query(query, (schedule_id,), commit=True)
+
+    @staticmethod
+    def update_status(schedule_id, status):
+        query = "UPDATE schedules SET status = %s WHERE schedule_id = %s"
+        return execute_query(query, (status, schedule_id), commit=True)
+
+    @staticmethod
+    def get_by_driver(driver_id):
+        query = """
+            SELECT s.*, 
+                   b.bus_number, b.model as bus_model, b.capacity,
+                   r.origin, r.destination, r.distance, r.estimated_duration,
+                   CONCAT(r.origin, ' → ', r.destination) as route_name,
+                   d.name as driver_name, d.phone as driver_phone
+            FROM schedules s
+            LEFT JOIN buses b ON s.bus_id = b.bus_id
+            LEFT JOIN routes r ON s.route_id = r.route_id
+            LEFT JOIN drivers d ON s.driver_id = d.driver_id
+            WHERE s.driver_id = %s
+            ORDER BY s.departure_time ASC
+        """
+        rows = execute_query(query, (driver_id,), fetch_all=True)
+        return [serialize_row(r) for r in (rows or [])]

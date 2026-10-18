@@ -223,7 +223,7 @@ const LiveTrackingPage = () => {
   // Fetch live telemetry from backend with fallback
   const fetchTelemetry = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/tracking');
+      const res = await fetch('/api/tracking');
       if (res.ok) {
         const data = await res.json();
         if (data.data?.vehicles) {

@@ -18,8 +18,10 @@ from backend.routes.report_routes import report_bp
 from backend.routes.tracking_routes import tracking_bp
 
 def create_app():
-    frontend_dir = Path(__file__).resolve().parent.parent / 'frontend'
-    app = Flask(__name__, static_folder=str(frontend_dir), static_url_path='')
+    root_dir = Path(__file__).resolve().parent.parent
+    react_dist = root_dir / 'frontend-react' / 'dist'
+    static_dir = react_dist if react_dist.exists() else (root_dir / 'frontend')
+    app = Flask(__name__, static_folder=str(static_dir), static_url_path='')
     app.config.from_object(Config)
 
     # Initialize rate limiter
@@ -67,28 +69,35 @@ def create_app():
         )
         # Permissions policy
         response.headers['Permissions-Policy'] = 'geolocation=(), camera=(), microphone=()'
-        # Cache control for API responses
-        if request.path.startswith('/api/'):
+        # Cache control for API responses and HTML SPA files
+        if request.path.startswith('/api/') or response.mimetype == 'text/html':
             response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
             response.headers['Pragma'] = 'no-cache'
         return response
 
-    # Serve Frontend HTML
+    # Serve Frontend Single Page App & Static Assets
     @app.route('/')
     def serve_frontend_root():
         return send_from_directory(app.static_folder, 'index.html')
 
     @app.route('/<path:path>')
     def serve_static_or_page(path):
+        if path.startswith('api/'):
+            return json_response(False, "API resource not found.", status_code=404)
         target = Path(app.static_folder) / path
-        if target.exists():
+        if target.exists() and not target.is_dir():
             return send_from_directory(app.static_folder, path)
         return send_from_directory(app.static_folder, 'index.html')
 
     # Global Error Handlers
     @app.errorhandler(404)
     def not_found_error(error):
-        return json_response(False, "Requested API resource not found.", status_code=404)
+        if request.path.startswith('/api/'):
+            return json_response(False, "Requested API resource not found.", status_code=404)
+        index_file = Path(app.static_folder) / 'index.html'
+        if index_file.exists():
+            return send_from_directory(app.static_folder, 'index.html')
+        return json_response(False, "Requested resource not found.", status_code=404)
 
     @app.errorhandler(429)
     def rate_limit_error(error):

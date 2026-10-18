@@ -125,3 +125,74 @@ class AuthService:
         token = generate_token(user_info)
 
         return True, "Login successful.", {"user": user_info, "token": token}
+
+    @staticmethod
+    def admin_register_passenger(data):
+        """
+        Admin-only endpoint to register a new passenger.
+        Creates both a user account and a linked passenger record.
+        The admin provides all details; a default password is set.
+        """
+        valid, err = validate_required_fields(data, ['name', 'email', 'phone'])
+        if not valid:
+            return False, err, None
+
+        valid_email, email_err = validate_email(data['email'])
+        if not valid_email:
+            return False, email_err, None
+
+        email = data['email'].strip()
+        name = data['name'].strip()
+        phone = data.get('phone', 'N/A').strip()
+
+        # Check if email is already registered
+        existing_email = User.get_by_username_or_email(email)
+        if existing_email:
+            return False, "A user with this email address already exists.", None
+
+        # Generate a username from the name if not provided
+        username = data.get('username', '').strip()
+        if not username:
+            # Auto-generate username from name
+            import re as _re
+            base = _re.sub(r'[^a-zA-Z0-9_]', '', name.replace(' ', '_').lower())
+            if len(base) < 3:
+                base = base + '_user'
+            username = base
+
+        # Check if username is taken and make unique
+        existing = User.get_by_username_or_email(username)
+        if existing:
+            import secrets as _secrets
+            username = f"{username}_{_secrets.token_hex(2)}"
+
+        # Use provided password or generate a default one
+        password = data.get('password', '').strip()
+        if not password:
+            password = 'Pass1234'  # Default password — admin should inform the passenger
+
+        if len(password) < 6:
+            return False, "Password must be at least 6 characters long.", None
+
+        # Create user account with Passenger role
+        user_id = User.create(
+            username=username,
+            email=email,
+            password=password,
+            role='Passenger'
+        )
+
+        # Create linked passenger record
+        passenger_id = Passenger.create(
+            name=name,
+            phone=phone,
+            email=email,
+            user_id=user_id
+        )
+
+        return True, "Passenger registered successfully by admin.", {
+            "user_id": user_id,
+            "passenger_id": passenger_id,
+            "username": username,
+            "default_password": password
+        }

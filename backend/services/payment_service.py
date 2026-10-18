@@ -27,13 +27,47 @@ class PaymentService:
         if not booking:
             return False, "Referenced booking does not exist.", None
 
+        method = str(data['payment_method']).strip()
+        phone_number = str(data.get('phone_number', '')).strip()
+        bank_name = str(data.get('bank_name', '')).strip()
+
+        # Telebirr validation & metadata simulation
+        if method.lower() == 'telebirr':
+            if phone_number and not (phone_number.startswith('09') or phone_number.startswith('+2519') or phone_number.startswith('2519') or phone_number.startswith('07') or phone_number.startswith('+2517')):
+                return False, "Invalid Ethiopian phone number for Telebirr. Must start with 09 or 07 (e.g., 0911234567).", None
+
+        # Determine default status based on payment channel
+        payment_status = data.get('payment_status')
+        if not payment_status:
+            if method.lower() in ['telebirr', 'mobile banking', 'cbe birr']:
+                payment_status = 'Completed'
+            elif method.lower() == 'cash':
+                payment_status = 'Completed'
+            else:
+                payment_status = 'Completed'
+
         payment_id, ref = Payment.create(
             booking_id=booking_id,
             amount=float(data['amount']),
-            payment_method=data['payment_method'],
-            payment_status=data.get('payment_status', 'Completed')
+            payment_method=method,
+            payment_status=payment_status
         )
-        return True, "Payment recorded successfully.", {"payment_id": payment_id, "transaction_reference": ref}
+
+        res_payload = {
+            "payment_id": payment_id,
+            "transaction_reference": ref,
+            "payment_method": method,
+            "payment_status": payment_status,
+            "amount": float(data['amount']),
+            "currency": "ETB"
+        }
+        if phone_number:
+            res_payload["phone_number"] = phone_number
+        if bank_name:
+            res_payload["bank_name"] = bank_name
+
+        message = f"Payment of ETB {float(data['amount']):.2f} via {method} processed successfully."
+        return True, message, res_payload
 
     @staticmethod
     def update_payment(payment_id, data):

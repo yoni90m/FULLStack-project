@@ -29,29 +29,65 @@ body {
   color: #e2e8f0 !important;
 }
 
-/* Dark Tables */
+/* Dark Tables — High Contrast & Readability */
 .table {
-  color: #cbd5e1 !important;
+  --bs-table-color: #f8fafc !important;
   --bs-table-bg: transparent !important;
-}
-
-.table-light, .table thead th {
-  background-color: rgba(255, 255, 255, 0.04) !important;
-  color: #94a3b8 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  --bs-table-border-color: rgba(255, 255, 255, 0.08) !important;
+  --bs-table-hover-color: #ffffff !important;
+  --bs-table-hover-bg: rgba(56, 189, 248, 0.06) !important;
+  color: #f8fafc !important;
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .table > :not(caption) > * > * {
-  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+  color: #e2e8f0 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
   background-color: transparent !important;
+  padding: 0.85rem 0.75rem;
 }
 
-.table-hover > tbody > tr:hover > * {
-  background-color: rgba(255, 255, 255, 0.04) !important;
-  color: #f1f5f9 !important;
+.table thead th, .table-light, .table-light th, .table thead.table-light th {
+  background-color: rgba(30, 41, 59, 0.75) !important;
+  color: #38bdf8 !important;
+  font-weight: 700 !important;
+  border-bottom: 2px solid rgba(56, 189, 248, 0.25) !important;
+  font-size: 0.78rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover td {
+  background-color: rgba(56, 189, 248, 0.06) !important;
+  color: #ffffff !important;
+}
+
+.table tbody td {
+  color: #cbd5e1 !important;
+  font-size: 0.92rem;
+}
+
+.table tbody td.fw-bold, .table tbody td .fw-bold {
+  color: #ffffff !important;
+}
+
+.table tbody td.text-primary, .table tbody td .text-primary {
+  color: #38bdf8 !important;
+}
+
+.table tbody td code {
+  color: #34d399 !important;
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-family: 'JetBrains Mono', monospace, monospace;
 }
 
 /* Dark Form Controls */
@@ -63,7 +99,7 @@ body {
 }
 
 .form-control::placeholder {
-  color: #64748b !important;
+  color: #94a3b8 !important;
 }
 
 .form-control:focus, .form-select:focus {

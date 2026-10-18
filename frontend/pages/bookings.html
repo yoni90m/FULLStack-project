@@ -192,12 +192,64 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="book-payment-method">Payment Method <span class="required">*</span></label>
-              <select id="book-payment-method" class="form-control">
-                <option value="Credit Card">Credit Card</option>
-                <option value="Mobile Payment">Mobile Payment</option>
-                <option value="Cash">Cash</option>
-                <option value="Bank Transfer">Bank Transfer</option>
+              <select id="book-payment-method" class="form-control" onchange="onPaymentMethodChanged(this.value)">
+                <option value="Telebirr" selected>🟢 Telebirr (Ethio Telecom)</option>
+                <option value="Mobile Banking">📱 Mobile Banking (CBE Birr, Awash, BoA)</option>
+                <option value="Cash">💵 Cash (Terminal Counter / On-Board)</option>
               </select>
+            </div>
+          </div>
+
+          <!-- Dynamic Payment Details Panel -->
+          <div id="payment-details-panel" style="margin-top: 0.5rem; margin-bottom: 1rem; padding: 0.85rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+            <!-- Telebirr Sub-form -->
+            <div id="panel-telebirr">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 700; color: #10b981; font-size: 0.85rem;">🟢 Telebirr Instant Checkout</span>
+                <span style="font-size: 0.75rem; color: #10b981; background: rgba(16, 185, 129, 0.15); padding: 2px 8px; border-radius: 4px;">Merchant ID: 882190</span>
+              </div>
+              <div class="form-group" style="margin-bottom: 0.35rem;">
+                <label class="form-label" for="telebirr-phone" style="font-size: 0.8rem;">Telebirr Mobile Number <span class="required">*</span></label>
+                <input type="tel" id="telebirr-phone" class="form-control" placeholder="09XXXXXXXX or +2519..." value="0911234567">
+              </div>
+              <small style="color: var(--text-muted); font-size: 0.75rem;">📲 A push notification / USSD prompt (*127#) will be simulated for instant ETB payment confirmation.</small>
+            </div>
+
+            <!-- Mobile Banking Sub-form -->
+            <div id="panel-mobile-banking" style="display: none;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 700; color: #00d2ff; font-size: 0.85rem;">🏦 Mobile Banking (Ethiopian Banks)</span>
+                <span style="font-size: 0.75rem; color: #00d2ff; background: rgba(0, 210, 255, 0.15); padding: 2px 8px; border-radius: 4px;">Instant Settlement</span>
+              </div>
+              <div class="form-row" style="margin-bottom: 0.35rem;">
+                <div class="form-group" style="margin-bottom: 0.35rem;">
+                  <label class="form-label" for="mobile-banking-bank" style="font-size: 0.8rem;">Select Bank <span class="required">*</span></label>
+                  <select id="mobile-banking-bank" class="form-control">
+                    <option value="Commercial Bank of Ethiopia (CBE Birr)">CBE (CBE Birr / *847#)</option>
+                    <option value="Awash Bank (Awash Birr)">Awash Bank (*901#)</option>
+                    <option value="Bank of Abyssinia">Bank of Abyssinia (*815#)</option>
+                    <option value="Dashen Bank (Amole)">Dashen Bank (*996#)</option>
+                    <option value="Cooperative Bank of Oromia">Coop Bank (*355#)</option>
+                  </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0.35rem;">
+                  <label class="form-label" for="mobile-banking-account" style="font-size: 0.8rem;">Account / Mobile No.</label>
+                  <input type="text" id="mobile-banking-account" class="form-control" placeholder="e.g. 100012345678 or 09..." value="1000293810293">
+                </div>
+              </div>
+              <small style="color: var(--text-muted); font-size: 0.75rem;">⚡ Instant verification against bank mobile banking gateway.</small>
+            </div>
+
+            <!-- Cash Sub-form -->
+            <div id="panel-cash" style="display: none;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 700; color: #f59e0b; font-size: 0.85rem;">💵 Cash Payment (Counter / On-Board)</span>
+                <span style="font-size: 0.75rem; color: #f59e0b; background: rgba(245, 158, 11, 0.15); padding: 2px 8px; border-radius: 4px;">Station Terminal</span>
+              </div>
+              <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0 0 0.25rem 0;">
+                Pay cash in Ethiopian Birr (ETB) at the TransLink bus terminal counter or directly to the coach conductor upon boarding.
+              </p>
+              <small style="color: #f59e0b; font-size: 0.75rem;">🧾 An official cash boarding voucher code will be issued on your ticket.</small>
             </div>
           </div>
 
@@ -224,11 +276,11 @@
           <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
             <div>
               <div style="font-size: 0.8rem; color: var(--text-muted);">Selected Seat: <strong id="seat-selection-display" style="color: var(--accent-cyan); font-size: 1rem;">None</strong></div>
-              <div style="font-size: 0.75rem; color: var(--text-dim);">Ticket Fare: <span id="summary-fare">$0.00</span></div>
+              <div style="font-size: 0.75rem; color: var(--text-dim);">Ticket Fare: <span id="summary-fare">ETB 0.00</span></div>
             </div>
             <div style="text-align: right;">
               <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Total Payable</div>
-              <div id="summary-total" style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: var(--success);">$0.00</div>
+              <div id="summary-total" style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: var(--success);">ETB 0.00</div>
             </div>
           </div>
         </div>

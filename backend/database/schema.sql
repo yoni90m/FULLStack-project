@@ -122,7 +122,7 @@ CREATE TABLE `payments` (
     `payment_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_id` INT NOT NULL,
     `amount` DECIMAL(10, 2) NOT NULL,
-    `payment_method` ENUM('Cash', 'Bank Transfer', 'Mobile Payment', 'Credit Card', 'Other') NOT NULL,
+    `payment_method` ENUM('Telebirr', 'Mobile Banking', 'Cash', 'Bank Transfer', 'Mobile Payment', 'Credit Card', 'Other') NOT NULL DEFAULT 'Telebirr',
     `payment_status` ENUM('Completed', 'Pending', 'Failed', 'Refunded') NOT NULL DEFAULT 'Completed',
     `payment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `transaction_reference` VARCHAR(60) NOT NULL UNIQUE,
