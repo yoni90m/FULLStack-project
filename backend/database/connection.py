@@ -27,6 +27,13 @@ def _get_postgres_connection(dbname=None):
     """Establish a connection to PostgreSQL using psycopg2."""
     if Config.DATABASE_URL and dbname is None:
         return psycopg2.connect(Config.DATABASE_URL)
+    import os
+    raw_env_url = os.getenv('DATABASE_URL')
+    if raw_env_url and not Config.DATABASE_URL and dbname is None:
+        raise ValueError(
+            f"DATABASE_URL in Render is set to '{raw_env_url}'. "
+            f"Please go to Render Environment and paste your full postgresql:// URL from Neon."
+        )
     db_to_connect = dbname if dbname is not None else Config.DB_NAME
     return psycopg2.connect(
         host=Config.DB_HOST,

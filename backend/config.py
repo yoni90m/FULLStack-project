@@ -24,10 +24,13 @@ class Config:
         match = re.search(r'postgres(?:ql)?://[^\s\'"]+', DATABASE_URL)
         if match:
             DATABASE_URL = match.group(0)
-        if DATABASE_URL.startswith("postgres://"):
-            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-        # Strip channel_binding if present (libpq / psycopg2 compatibility)
-        DATABASE_URL = DATABASE_URL.replace('&channel_binding=require', '').replace('?channel_binding=require', '')
+            if DATABASE_URL.startswith("postgres://"):
+                DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+            # Strip channel_binding if present (libpq / psycopg2 compatibility)
+            DATABASE_URL = DATABASE_URL.replace('&channel_binding=require', '').replace('?channel_binding=require', '')
+        else:
+            # Does not contain a valid postgresql:// URL
+            DATABASE_URL = None
 
     DB_HOST = os.getenv('DB_HOST', 'localhost')
     DB_PORT = int(os.getenv('DB_PORT', 5432))
