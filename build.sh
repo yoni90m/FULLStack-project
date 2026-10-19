@@ -10,6 +10,3 @@ cd frontend-react
 npm install
 npm run build
 cd ..
-
-# 3. Initialize PostgreSQL Database Schema & Seed Data
-python -c "from backend.database.connection import _init_postgres_db; _init_postgres_db()"

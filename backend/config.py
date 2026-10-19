@@ -18,8 +18,11 @@ class Config:
 
     # PostgreSQL Configuration
     DATABASE_URL = os.getenv('DATABASE_URL')
-    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    if DATABASE_URL:
+        if DATABASE_URL.startswith("postgres://"):
+            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        # Strip channel_binding if present (libpq / psycopg2 compatibility)
+        DATABASE_URL = DATABASE_URL.replace('&channel_binding=require', '').replace('?channel_binding=require', '')
 
     DB_HOST = os.getenv('DB_HOST', 'localhost')
     DB_PORT = int(os.getenv('DB_PORT', 5432))
