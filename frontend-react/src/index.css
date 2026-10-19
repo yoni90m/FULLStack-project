@@ -223,3 +223,93 @@ code {
   min-height: calc(100vh - 70px);
   border-radius: 0;
 }
+
+/* ===================================================
+   Mobile & Multi-Device Compatibility System
+   Optimized for Smartphones (iOS & Android), Tablets & Laptops
+   =================================================== */
+
+/* Prevent horizontal overflow globally */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive Table Wrapper */
+.table-responsive,
+.card-body > .table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 0;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 4px;
+}
+
+/* Touch Friendly Form Controls */
+@media (max-width: 768px) {
+  .form-control, .form-select, .btn {
+    min-height: 44px;
+    font-size: 0.95rem;
+  }
+
+  .container-fluid.p-4 {
+    padding: 1rem 0.75rem !important;
+  }
+
+  /* Stat cards 100% width on small screens */
+  .col-md-3, .col-sm-6 {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Modals full width on mobile */
+  .modal-dialog {
+    margin: 0.75rem;
+    max-width: calc(100% - 1.5rem);
+  }
+
+  .modal-content {
+    border-radius: 14px;
+  }
+
+  /* Top bar layout for mobile */
+  .top-navbar-mobile {
+    padding: 0.75rem 1rem !important;
+    gap: 0.5rem;
+  }
+}
+
+/* Extra small devices (smartphones, 480px and down) */
+@media (max-width: 480px) {
+  h1, .h1 { font-size: 1.75rem !important; }
+  h2, .h2 { font-size: 1.5rem !important; }
+  h3, .h3 { font-size: 1.25rem !important; }
+  h4, .h4 { font-size: 1.1rem !important; }
+
+  .card {
+    border-radius: 12px;
+  }
+
+  .card-body {
+    padding: 1rem 0.85rem !important;
+  }
+
+  .badge {
+    font-size: 0.72rem !important;
+    padding: 0.35em 0.65em;
+  }
+
+  /* Button flex wrap */
+  .d-flex.gap-2, .d-flex.gap-3 {
+    flex-wrap: wrap;
+    gap: 0.4rem !important;
+  }
+}

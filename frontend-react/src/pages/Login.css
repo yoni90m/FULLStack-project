@@ -458,3 +458,60 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Smartphone optimization (iPhone, Android, small screens <= 480px) */
+@media (max-width: 480px) {
+  .flix-auth-page {
+    padding: 1rem 0.65rem;
+    min-height: 100dvh;
+    align-items: flex-start;
+  }
+
+  .flix-auth-card {
+    max-width: 100%;
+    padding: 1.4rem 1.1rem 1.25rem;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .flix-card-title {
+    font-size: 1.55rem;
+    margin-bottom: 0.6rem;
+  }
+
+  /* 16px font-size prevents iOS zoom bug on text input focus */
+  .flix-input {
+    min-height: 48px;
+    font-size: 16px !important;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .flix-submit-btn {
+    min-height: 48px;
+    font-size: 1.02rem;
+  }
+
+  .flix-demo-box {
+    padding: 0.8rem 0.75rem;
+  }
+
+  .flix-demo-chips {
+    gap: 0.4rem;
+  }
+
+  .flix-chip {
+    font-size: 0.78rem;
+    padding: 0.38rem 0.6rem;
+    flex: 1 1 calc(50% - 0.4rem);
+    justify-content: center;
+  }
+
+  .flix-bullets {
+    gap: 0.45rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .flix-bullet {
+    font-size: 0.84rem;
+  }
+}
