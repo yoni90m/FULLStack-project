@@ -19,6 +19,11 @@ class Config:
     # PostgreSQL Configuration
     DATABASE_URL = os.getenv('DATABASE_URL')
     if DATABASE_URL:
+        DATABASE_URL = DATABASE_URL.strip().strip("'\"")
+        # Extract the pure connection URL if preceded by branch name, command, or extra text
+        match = re.search(r'postgres(?:ql)?://[^\s\'"]+', DATABASE_URL)
+        if match:
+            DATABASE_URL = match.group(0)
         if DATABASE_URL.startswith("postgres://"):
             DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
         # Strip channel_binding if present (libpq / psycopg2 compatibility)
