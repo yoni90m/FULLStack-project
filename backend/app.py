@@ -107,7 +107,11 @@ def create_app():
 
     @app.errorhandler(500)
     def internal_error(error):
-        return json_response(False, "An internal server error occurred.", status_code=500)
+        import traceback
+        err_msg = str(getattr(error, 'original_exception', error))
+        print(f"[500 Internal Error]: {err_msg}")
+        traceback.print_exc()
+        return json_response(False, f"Server error: {err_msg}", status_code=500)
 
     return app
 

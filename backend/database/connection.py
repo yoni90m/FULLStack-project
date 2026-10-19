@@ -82,12 +82,15 @@ def _init_postgres_db(force=False):
                 WHERE table_schema = 'public' AND table_name = 'users'
             );
         """)
-        has_users = cur.fetchone()[0]
+        table_exists = cur.fetchone()[0]
 
-        if has_users:
-            cur.close()
-            conn.close()
-            return
+        if table_exists:
+            cur.execute("SELECT COUNT(*) FROM users;")
+            user_count = cur.fetchone()[0]
+            if user_count > 0:
+                cur.close()
+                conn.close()
+                return
 
     print(f"[PostgreSQL]: Initializing tables and seed data in '{Config.DB_NAME}'...")
 
