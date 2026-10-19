@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container, Row, Col, Card, Table, Badge, Form, Button, Modal, Nav, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Badge, Form, Button, Modal, Nav, Spinner, Alert, InputGroup } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 
 const initialBookedPassengers = [
@@ -42,6 +42,20 @@ const PassengersPage = () => {
   const [regLoading, setRegLoading] = useState(false);
   const [regError, setRegError] = useState('');
   const [regSuccess, setRegSuccess] = useState('');
+
+  // Password Reset Modal state
+  const [resetModal, setResetModal] = useState({
+    show: false,
+    passenger: null,
+    mode: 'auto',
+    customPassword: '',
+    showPassword: false,
+    loading: false,
+    result: null,
+    copied: false,
+    error: '',
+    success: ''
+  });
 
   /* ─── Fetch booked passengers ─── */
   useEffect(() => {
@@ -169,6 +183,88 @@ const PassengersPage = () => {
     setRegError('');
     setRegSuccess('');
     setRegForm({ name: '', email: '', phone: '', username: '', password: '' });
+  };
+
+  /* ─── Admin Reset Passenger Password ─── */
+  const openResetModal = (passenger) => {
+    setResetModal({
+      show: true,
+      passenger,
+      mode: 'auto',
+      customPassword: '',
+      showPassword: false,
+      loading: false,
+      result: null,
+      copied: false,
+      error: '',
+      success: ''
+    });
+  };
+
+  const closeResetModal = () => {
+    setResetModal({
+      show: false,
+      passenger: null,
+      mode: 'auto',
+      customPassword: '',
+      showPassword: false,
+      loading: false,
+      result: null,
+      copied: false,
+      error: '',
+      success: ''
+    });
+  };
+
+  const handleResetPassword = async (e) => {
+    if (e) e.preventDefault();
+    if (!resetModal.passenger) return;
+
+    if (resetModal.mode === 'custom') {
+      if (!resetModal.customPassword || resetModal.customPassword.trim().length < 6) {
+        setResetModal(prev => ({ ...prev, error: 'Custom password must be at least 6 characters long.' }));
+        return;
+      }
+    }
+
+    setResetModal(prev => ({ ...prev, loading: true, error: '', success: '' }));
+    try {
+      const payload = {
+        ...(resetModal.passenger.user_id ? { user_id: resetModal.passenger.user_id } : { identifier: resetModal.passenger.email }),
+        ...(resetModal.mode === 'custom' ? { new_password: resetModal.customPassword.trim() } : {})
+      };
+
+      const res = await authFetch('/auth/admin/reset-password', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Password reset failed.');
+      }
+
+      setResetModal(prev => ({
+        ...prev,
+        loading: false,
+        result: data.data,
+        success: `Password reset successfully for ${resetModal.passenger.name}!`,
+        error: ''
+      }));
+    } catch (err) {
+      setResetModal(prev => ({
+        ...prev,
+        loading: false,
+        error: err.message || 'Failed to reset password.'
+      }));
+    }
+  };
+
+  const copyCredentials = (username, password) => {
+    const text = `Username: ${username}\nNew Password: ${password}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setResetModal(prev => ({ ...prev, copied: true }));
+      setTimeout(() => setResetModal(prev => ({ ...prev, copied: false })), 3000);
+    });
   };
 
   /* ─── Status badge helper ─── */
@@ -375,12 +471,13 @@ const PassengersPage = () => {
                       <th>Phone</th>
                       <th>Registered</th>
                       <th>Status</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredRegistered.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="text-center py-4 text-muted">
+                        <td colSpan={7} className="text-center py-4 text-muted">
                           {registeredPassengers.length === 0
                             ? 'No registered passengers yet. Use the "Register Passenger" button to add one.'
                             : 'No passengers match your search.'}
@@ -426,6 +523,18 @@ const PassengersPage = () => {
                             </small>
                           </td>
                           <td>{statusBadge(p.status)}</td>
+                          <td>
+                            <Button
+                              size="sm"
+                              variant="outline-warning"
+                              className="rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm"
+                              onClick={() => openResetModal(p)}
+                              title={`Reset password for ${p.name || p.username}`}
+                              id={`btn-passenger-reset-${p.passenger_id}`}
+                            >
+                              <span>🔑</span> Reset Password
+                            </Button>
+                          </td>
                         </tr>
                       ))
                     )}
@@ -648,6 +757,189 @@ const PassengersPage = () => {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ═══════════════════════════════════════════════════════
+          ADMIN RESET PASSENGER PASSWORD MODAL
+         ═══════════════════════════════════════════════════════ */}
+      <Modal
+        show={resetModal.show}
+        onHide={closeResetModal}
+        centered
+        contentClassName="border-0"
+      >
+        <div style={{ ...glassCard, padding: 0, overflow: 'hidden' }}>
+          {/* Modal Header */}
+          <div
+            className="p-4 d-flex justify-content-between align-items-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(249, 115, 22, 0.08))',
+              borderBottom: '1px solid rgba(255,255,255,0.08)',
+            }}
+          >
+            <div>
+              <h5 className="fw-bold mb-0 text-white">🔑 Reset Passenger Password</h5>
+              <small className="text-warning">
+                Reset forgotten credentials for {resetModal.passenger?.name || resetModal.passenger?.username}
+              </small>
+            </div>
+            <button
+              onClick={closeResetModal}
+              className="btn btn-sm text-white-50"
+              style={{ background: 'none', border: 'none', fontSize: '1.2rem', lineHeight: 1 }}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="p-4">
+            {resetModal.error && (
+              <Alert variant="danger" className="rounded-3 py-2 small mb-3">
+                {resetModal.error}
+              </Alert>
+            )}
+
+            {resetModal.result ? (
+              <div className="text-center py-2">
+                <div className="fs-1 mb-2">🎉</div>
+                <h5 className="fw-bold text-success mb-2">Password Successfully Reset!</h5>
+                <p className="text-white-50 small mb-3">
+                  The passenger account password has been updated. Provide these new credentials to the passenger.
+                </p>
+
+                <div
+                  className="p-3 rounded-3 text-start mb-3"
+                  style={{
+                    background: 'rgba(30, 41, 59, 0.7)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                  }}
+                >
+                  <div className="small text-muted mb-1">Passenger Name / Username:</div>
+                  <div className="fw-bold text-info mb-2 fs-6">
+                    {resetModal.passenger?.name} ({resetModal.result.username})
+                  </div>
+                  <div className="small text-muted mb-1">Email Address:</div>
+                  <div className="text-white mb-2 fs-6">{resetModal.result.email}</div>
+                  <div className="small text-muted mb-1">New Temporary Password:</div>
+                  <div className="fw-bold text-warning fs-5 font-monospace">{resetModal.result.new_password}</div>
+                </div>
+
+                <div className="d-flex gap-2 justify-content-center">
+                  <Button
+                    variant={resetModal.copied ? "success" : "primary"}
+                    className="rounded-pill px-4 fw-semibold"
+                    onClick={() => copyCredentials(resetModal.result.username, resetModal.result.new_password)}
+                  >
+                    {resetModal.copied ? "✅ Copied to Clipboard!" : "📋 Copy Credentials"}
+                  </Button>
+                  <Button
+                    variant="outline-light"
+                    className="rounded-pill px-4"
+                    onClick={closeResetModal}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div
+                  className="p-3 mb-3 rounded-3"
+                  style={{
+                    background: 'rgba(30, 41, 59, 0.5)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                  }}
+                >
+                  <div className="small text-white-50">Passenger Account:</div>
+                  <div className="fw-bold fs-6 text-white">{resetModal.passenger?.name}</div>
+                  <div className="small text-info">
+                    Username: <code>{resetModal.passenger?.username || '—'}</code> • Email: {resetModal.passenger?.email}
+                  </div>
+                </div>
+
+                <Form onSubmit={handleResetPassword}>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="small text-muted fw-semibold">Reset Option</Form.Label>
+                    <div className="d-flex flex-column gap-2 mt-1">
+                      <Form.Check
+                        type="radio"
+                        id="passenger-opt-auto"
+                        name="passengerResetMode"
+                        label="Auto-generate secure temporary password (e.g. TransLink#8392)"
+                        checked={resetModal.mode === 'auto'}
+                        onChange={() => setResetModal(prev => ({ ...prev, mode: 'auto', error: '' }))}
+                        className="small text-white"
+                      />
+                      <Form.Check
+                        type="radio"
+                        id="passenger-opt-custom"
+                        name="passengerResetMode"
+                        label="Specify custom new password"
+                        checked={resetModal.mode === 'custom'}
+                        onChange={() => setResetModal(prev => ({ ...prev, mode: 'custom', error: '' }))}
+                        className="small text-white"
+                      />
+                    </div>
+                  </Form.Group>
+
+                  {resetModal.mode === 'custom' && (
+                    <Form.Group className="mb-3">
+                      <Form.Label className="small text-muted">New Password (min. 6 characters)</Form.Label>
+                      <InputGroup>
+                        <Form.Control
+                          type={resetModal.showPassword ? "text" : "password"}
+                          placeholder="Enter new password for passenger"
+                          style={glassInput}
+                          value={resetModal.customPassword}
+                          onChange={e => setResetModal(prev => ({ ...prev, customPassword: e.target.value, error: '' }))}
+                          required
+                        />
+                        <Button
+                          variant="outline-secondary"
+                          className="text-white-50"
+                          type="button"
+                          onClick={() => setResetModal(prev => ({ ...prev, showPassword: !prev.showPassword }))}
+                          style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+                        >
+                          {resetModal.showPassword ? "🙈" : "👁️"}
+                        </Button>
+                      </InputGroup>
+                    </Form.Group>
+                  )}
+
+                  <p className="text-white-50 small mb-4">
+                    {resetModal.mode === 'auto'
+                      ? "A randomized password will be generated upon confirmation. You will be able to copy and give it to the passenger."
+                      : "The passenger's password will immediately be updated to what you typed above."}
+                  </p>
+
+                  <div className="d-flex justify-content-end gap-2 pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    <Button variant="outline-secondary" className="rounded-pill px-4" onClick={closeResetModal}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="warning"
+                      type="submit"
+                      className="rounded-pill px-4 fw-bold"
+                      disabled={resetModal.loading}
+                      id="btn-confirm-passenger-reset"
+                    >
+                      {resetModal.loading ? (
+                        <>
+                          <Spinner animation="border" size="sm" className="me-2" />
+                          Resetting...
+                        </>
+                      ) : (
+                        "Confirm & Reset Password"
+                      )}
+                    </Button>
+                  </div>
+                </Form>
+              </div>
+            )}
           </div>
         </div>
       </Modal>

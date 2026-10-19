@@ -25,6 +25,10 @@ def serialize_row(row):
     for k, v in row.items():
         if isinstance(v, (datetime.datetime, datetime.date)):
             result[k] = v.strftime("%Y-%m-%d %H:%M:%S")
+        elif isinstance(v, bool):
+            result[k] = v
+        elif isinstance(v, int):
+            result[k] = v
         elif hasattr(v, '__float__'):
             result[k] = float(v)
         else:

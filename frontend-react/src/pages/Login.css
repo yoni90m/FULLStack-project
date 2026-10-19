@@ -1,293 +1,460 @@
-/* ===== Login Page Styles ===== */
+/* ==========================================================================
+   FlixBus Authentication Design System
+   Matches official Flix / FlixBus UI with right-floating modal & photo background
+   ========================================================================== */
 
-.login-wrapper {
+.flix-auth-page {
   min-height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #0a0f1c 0%, #111827 50%, #0f172a 100%);
-  padding: 20px;
+  justify-content: flex-end; /* Floating card on the right like screenshot */
+  padding: 2.5rem 6% 2.5rem 2rem;
   position: relative;
-  overflow: hidden;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.login-wrapper::before {
-  content: '';
+/* Subtle gradient overlay to ensure contrast and bus visibility */
+.flix-auth-overlay {
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-              radial-gradient(ellipse at 70% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
-  animation: aurora 15s ease-in-out infinite alternate;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.15) 60%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
   pointer-events: none;
-}
-
-@keyframes aurora {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(2%, -2%) rotate(3deg); }
-}
-
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 40px 36px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 130, 246, 0.05);
-  position: relative;
   z-index: 1;
-  animation: fadeInUp 0.6s ease-out;
 }
 
-@keyframes fadeInUp {
+/* Floating White Auth Card */
+.flix-auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.4rem 2.2rem 2rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.32), 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+  animation: flixCardSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes flixCardSlide {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateX(25px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0) scale(1);
   }
 }
 
-.login-header {
+/* Top FLIX Brand Badge */
+.flix-badge-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+}
+
+.flix-logo-badge {
+  background: #73D700;
+  color: #ffffff;
+  font-family: 'Outfit', 'Arial Black', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  padding: 0.35rem 1.15rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(115, 215, 0, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+/* Main Heading */
+.flix-auth-card h2 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #191919;
   text-align: center;
-  margin-bottom: 32px;
-}
-
-.login-logo {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
-}
-
-.login-header h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #f1f5f9;
-  margin: 0 0 6px;
+  margin: 0 0 1rem;
   letter-spacing: -0.5px;
 }
 
-.text-accent {
-  color: #3b82f6;
-}
-
-.login-subtitle {
-  color: #64748b;
-  font-size: 0.9rem;
-  margin: 0;
-}
-
-/* Alert */
-.login-alert {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: 12px;
-  padding: 12px 16px;
-  color: #fca5a5;
-  font-size: 0.875rem;
-  margin-bottom: 20px;
-  animation: shake 0.3s ease-in-out;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-
-.alert-icon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-
-/* Form */
-.login-form {
+/* Checklist of Benefits */
+.flix-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0.5rem;
 }
 
-.form-group label {
-  display: block;
-  color: #94a3b8;
-  font-size: 0.85rem;
+.flix-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #2b2b2b;
+  font-size: 0.88rem;
   font-weight: 500;
-  margin-bottom: 8px;
-  letter-spacing: 0.3px;
+  line-height: 1.35;
 }
 
-.input-wrapper {
+.flix-check-icon {
+  color: #73D700;
+  font-weight: 900;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Alerts */
+.flix-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  margin-bottom: 1.1rem;
+  line-height: 1.4;
+}
+
+.flix-alert.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.flix-alert.success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+/* Form Layout */
+.flix-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.flix-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.flix-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.flix-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.35rem;
+}
+
+.flix-input-wrap {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.input-wrapper .input-icon {
-  position: absolute;
-  left: 14px;
-  font-size: 1rem;
-  pointer-events: none;
-  opacity: 0.6;
-}
-
-.input-wrapper input {
+.flix-input {
   width: 100%;
-  padding: 13px 16px 13px 44px;
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  color: #f1f5f9;
+  padding: 0.75rem 0.9rem;
   font-size: 0.95rem;
+  color: #111827;
+  background: #ffffff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
   outline: none;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-.input-wrapper input::placeholder {
-  color: #475569;
+.flix-input::placeholder {
+  color: #9ca3af;
+  font-size: 0.9rem;
 }
 
-.input-wrapper input:focus {
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  background: rgba(30, 41, 59, 0.8);
+.flix-input:focus {
+  border-color: #73D700;
+  box-shadow: 0 0 0 3px rgba(115, 215, 0, 0.22);
 }
 
-.input-wrapper input:disabled {
-  opacity: 0.5;
+.flix-input:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
   cursor: not-allowed;
 }
 
-/* Button */
-.login-btn {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
+.flix-toggle-pwd {
+  position: absolute;
+  right: 10px;
+  background: none;
   border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
   cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+}
+
+.flix-toggle-pwd:hover {
+  opacity: 1;
+}
+
+/* FlixBus Big Lime Green Action Button */
+.flix-btn-continue {
+  width: 100%;
+  background: #73D700;
+  color: #111827;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 0.9rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  margin-top: 4px;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(115, 215, 0, 0.35);
 }
 
-.login-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+.flix-btn-continue:hover:not(:disabled) {
+  background: #68c500;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 6px 18px rgba(115, 215, 0, 0.45);
 }
 
-.login-btn:active:not(:disabled) {
+.flix-btn-continue:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.login-btn:disabled {
-  opacity: 0.6;
+.flix-btn-continue:disabled {
+  opacity: 0.65;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-.spinner {
+/* Spinner */
+.flix-spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 2px solid rgba(17, 24, 39, 0.2);
+  border-top-color: #111827;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: flixSpin 0.6s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes flixSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Footer */
-.login-footer {
-  text-align: center;
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+/* Demo Role Quick Switcher for Fast Testing */
+.flix-demo-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  background: #f9fafb;
+  border: 1px dashed #e5e7eb;
+  padding: 0.65rem 0.5rem;
+  border-radius: 8px;
+  margin-top: 0.2rem;
 }
 
-.back-link {
-  color: #64748b;
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: color 0.2s;
-}
-
-.back-link:hover {
-  color: #3b82f6;
-}
-
-/* Register Prompt & Secondary Button */
-.login-register-prompt {
-  text-align: center;
-  color: #94a3b8;
-  font-size: 0.9rem;
-  margin-top: 16px;
-}
-
-.login-register-prompt .register-link {
-  color: #3b82f6;
+.flix-demo-label {
+  font-size: 0.72rem;
   font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.login-register-prompt .register-link:hover {
-  color: #60a5fa;
+.flix-demo-btns {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.flix-demo-chip {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.22rem 0.55rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.flix-demo-chip:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+/* Switch between Sign In and Register */
+.flix-switch-wrap {
+  text-align: center;
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.flix-switch-prompt {
+  font-size: 0.88rem;
+  color: #4b5563;
+}
+
+.flix-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.flix-switch-btn:hover {
+  color: #559e00;
+  background: rgba(115, 215, 0, 0.1);
+}
+
+/* Disclaimer & Footer Legal Text matching official FlixBus screenshot */
+.flix-disclaimer {
+  margin-top: 1.3rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid #f0f0f0;
+  font-size: 0.72rem;
+  color: #6b7280;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.flix-disclaimer p {
+  margin: 0 0 0.5rem;
+}
+
+.flix-disclaimer a {
+  color: #2563eb;
   text-decoration: underline;
 }
 
-.register-btn-wrapper {
-  margin-top: 12px;
+.flix-read-more {
+  display: inline-block;
+  margin-top: 0.2rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
 }
 
-.btn-register-outline {
+/* Step 2 in Register */
+.flix-step2-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 12px;
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 12px;
-  color: #93c5fd;
-  font-size: 0.95rem;
-  font-weight: 600;
+  justify-content: space-between;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  margin-bottom: 0.85rem;
+}
+
+.flix-step2-email {
+  font-size: 0.88rem;
+  color: #15803d;
+  word-break: break-all;
+}
+
+.flix-step2-change-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 2px 6px;
+  text-decoration: underline;
+}
+
+.flix-read-more-text {
+  font-size: 0.72rem;
+  color: #4b5563;
+  margin-top: 0.4rem;
+  background: #f9fafb;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #f3f4f6;
+  text-align: left;
+}
+
+/* Back Link */
+.flix-back-link {
+  display: block;
+  text-align: center;
+  margin-top: 0.8rem;
+  font-size: 0.82rem;
+  color: #6b7280;
   text-decoration: none;
-  transition: all 0.25s ease;
+  font-weight: 500;
+  transition: color 0.15s;
 }
 
-.btn-register-outline:hover {
-  background: rgba(59, 130, 246, 0.18);
-  border-color: #3b82f6;
-  color: #ffffff;
-  transform: translateY(-1px);
+.flix-back-link:hover {
+  color: #111827;
 }
 
-.login-alert.success {
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.3);
-  color: #6ee7b7;
-}
+/* Responsive */
+@media (max-width: 900px) {
+  .flix-auth-page {
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    background-position: 70% center;
+  }
 
-.register-card {
-  max-width: 540px;
+  .flix-auth-card {
+    max-width: 440px;
+    padding: 2rem 1.6rem 1.6rem;
+  }
+
+  .flix-form-row {
+    grid-template-columns: 1fr;
+  }
 }

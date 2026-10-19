@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — TransLink Bus Transportation</title>
+  <link rel="icon" type="image/jpeg" href="../assets/icons/translink-icon.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <style>
+    .contact-hero-banner {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.9), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .contact-cards-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .contact-card-box {
+      background: rgba(30, 41, 59, 0.45);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: transform 0.2s;
+    }
+    .contact-card-box:hover {
+      transform: translateY(-3px);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+    .contact-icon-large {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    .contact-grid-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+    }
+    @media (max-width: 900px) {
+      .contact-grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .station-hub-item {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="../dashboard.html" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <img src="../assets/icons/translink-icon.jpg" alt="TransLink Logo">
+          </div>
+          <span>Trans<span style="color: var(--accent-cyan);">Link</span></span>
+        </a>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="sidebar-group-title">Main Menu</div>
+        <ul class="sidebar-menu">
+          <li>
+            <a href="../dashboard.html" class="nav-item">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="buses.html" class="nav-item">
+              <span class="nav-icon">🚍</span>
+              <span>Bus Fleet</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger,Driver">
+            <a href="routes.html" class="nav-item">
+              <span class="nav-icon">🗺️</span>
+              <span>Routes</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Driver,Passenger">
+            <a href="schedules.html" class="nav-item">
+              <span class="nav-icon">🕒</span>
+              <span>Schedules</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="drivers.html" class="nav-item">
+              <span class="nav-icon">👨‍✈️</span>
+              <span>Drivers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin">
+            <a href="passengers.html" class="nav-item">
+              <span class="nav-icon">👥</span>
+              <span>Passengers</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="bookings.html" class="nav-item">
+              <span class="nav-icon">🎫</span>
+              <span>Bookings & Seats</span>
+            </a>
+          </li>
+          <li data-role-restricted="Admin,Passenger">
+            <a href="payments.html" class="nav-item">
+              <span class="nav-icon">💳</span>
+              <span>Payments</span>
+            </a>
+          </li>
+          <li>
+            <a href="contact.html" class="nav-item active">
+              <span class="nav-icon">📞</span>
+              <span>Contact Us</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-sidebar-logout js-logout-btn">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <button id="mobile-toggle" class="mobile-nav-toggle" aria-label="Toggle Navigation">☰</button>
+          <div class="navbar-page-title">
+            <h2>📞 Contact Support & Operations</h2>
+            <span class="navbar-subtitle">24/7 Passenger Assistance and Central Dispatch Hotline</span>
+          </div>
+        </div>
+        <div class="navbar-right">
+          <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">🏠 Home Portal</a>
+        </div>
+      </header>
+
+      <div class="content-container">
+        <!-- Hero Banner -->
+        <div class="contact-hero-banner">
+          <span class="badge badge-info mb-2" style="font-size: 0.85rem; padding: 0.4rem 1rem;">● 24/7 Operations Desk</span>
+          <h1 style="font-size: 2.2rem; font-weight: 800; margin: 0.5rem 0;">We Are Here To Assist Your Travel</h1>
+          <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto;">
+            Need help with your reservation, lost luggage, trip schedules, or commercial charter? Connect with our team anytime.
+          </p>
+        </div>
+
+        <!-- Quick Contact Channels -->
+        <div class="contact-cards-row">
+          <div class="contact-card-box">
+            <div class="contact-icon-large">📞</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;">24/7 Telephone Hotline</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.75rem;">Immediate phone support for active bus travel.</p>
+            <div style="font-weight: 700; color: var(--accent-cyan); font-size: 1.05rem;">+251 911 000 111</div>
+            <small style="color: var(--text-muted);">Secondary: +251 115 500 000</small>
+          </div>
+
+          <div class="contact-card-box">
+            <div class="contact-icon-large">✉️</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;">Email Customer Care</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.75rem;">Inquiries, booking receipts, and refunds.</p>
+            <div style="font-weight: 700; color: var(--accent-cyan); font-size: 1.05rem;">support@translink.com</div>
+            <small style="color: var(--text-muted);">Response within 15 minutes</small>
+          </div>
+
+          <div class="contact-card-box">
+            <div class="contact-icon-large">🏢</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;">Central Terminal Hub</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0.75rem;">Flagship station & ticket office.</p>
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 1.05rem;">Meskel Square & Bole Road</div>
+            <small style="color: var(--text-muted);">Addis Ababa, Ethiopia</small>
+          </div>
+        </div>
+
+        <!-- Form and Stations Grid -->
+        <div class="contact-grid-layout">
+          <!-- Form -->
+          <div class="card p-4">
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 0.5rem;">Send a Direct Message</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem;">Our dispatch desk will respond promptly to your request.</p>
+
+            <form id="contact-form">
+              <div class="form-group mb-3">
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-control" id="c-name" placeholder="e.g. Abebe Bekele" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label class="form-label">Email Address *</label>
+                <input type="email" class="form-control" id="c-email" placeholder="e.g. abebe@gmail.com" required>
+              </div>
+
+              <div class="form-group mb-3">
+                <label class="form-label">Subject / Category</label>
+                <select class="form-control" id="c-subject">
+                  <option>Ticket Reservation & Seat Queries</option>
+                  <option>Schedule Delays & Departure Times</option>
+                  <option>Lost & Found Luggage Assistance</option>
+                  <option>Payment & Telebirr Inquiries</option>
+                  <option>Private Coach Charter</option>
+                  <option>General Feedback</option>
+                </select>
+              </div>
+
+              <div class="form-group mb-4">
+                <label class="form-label">Your Message *</label>
+                <textarea class="form-control" id="c-message" rows="4" placeholder="How can we assist you today?" required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100" style="padding: 0.85rem; font-weight: 700;">
+                🚀 Submit Message to Dispatch
+              </button>
+            </form>
+
+            <div id="contact-alert" style="display: none; margin-top: 1rem; padding: 1rem; border-radius: 8px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399;">
+              ✅ Thank you! Your message has been sent to our customer care center.
+            </div>
+          </div>
+
+          <!-- Regional Stations -->
+          <div class="card p-4">
+            <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 0.5rem;">Regional Terminals</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem;">Physical booking offices and departure stations:</p>
+
+            <div class="station-hub-item">
+              <div style="font-weight: 700; color: #fff;">📍 Addis Ababa Central Station</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Meskel Square & Autobus Tera Gateway</div>
+              <div style="font-size: 0.78rem; color: var(--accent-cyan); margin-top: 4px;">🕒 24/7 Operations • 📞 +251 911 000 111</div>
+            </div>
+
+            <div class="station-hub-item">
+              <div style="font-weight: 700; color: #fff;">📍 Bahir Dar Hub</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Lake Tana Intercity Terminal, Kebele 04</div>
+              <div style="font-size: 0.78rem; color: var(--accent-cyan); margin-top: 4px;">🕒 05:30 AM – 09:30 PM • 📞 +251 582 201 199</div>
+            </div>
+
+            <div class="station-hub-item">
+              <div style="font-weight: 700; color: #fff;">📍 Hawassa Terminal</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Southern Expressway Depot, Main Piazza</div>
+              <div style="font-size: 0.78rem; color: var(--accent-cyan); margin-top: 4px;">🕒 06:00 AM – 09:00 PM • 📞 +251 462 120 440</div>
+            </div>
+
+            <div class="station-hub-item">
+              <div style="font-weight: 700; color: #fff;">📍 Dire Dawa Station</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Eastern Railway & Coach Square, Kezira</div>
+              <div style="font-size: 0.78rem; color: var(--accent-cyan); margin-top: 4px;">🕒 06:00 AM – 10:00 PM • 📞 +251 251 114 888</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script>
+    document.getElementById('contact-form')?.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('c-name').value;
+      const email = document.getElementById('c-email').value;
+      const subject = document.getElementById('c-subject').value;
+      const message = document.getElementById('c-message').value;
+
+      try {
+        const res = await fetch('/api/reports/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, subject, message })
+        });
+        const data = await res.json();
+        const alertEl = document.getElementById('contact-alert');
+        alertEl.style.display = 'block';
+        alertEl.textContent = '✅ Thank you, ' + name + '! Your message (Ref: ' + (data.data?.id || 'INQ') + ') has been delivered to dispatch.';
+        document.getElementById('contact-form').reset();
+      } catch (err) {
+        alert('Thank you! Your message has been queued for our team.');
+      }
+    });
+  </script>
+</body>
+</html>

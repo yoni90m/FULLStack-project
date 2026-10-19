@@ -172,7 +172,7 @@ textarea.form-control {
   justify-content: flex-end;
   padding: 2.5rem 8% 2.5rem 2rem;
   position: relative;
-  background: url('../assets/images/register-bg.jpg') no-repeat center center fixed;
+  background: url('../assets/images/ethiopian_bus_login_bg.jpg') no-repeat center center fixed;
   background-size: cover;
   box-sizing: border-box;
 }
@@ -321,26 +321,27 @@ textarea.form-control {
 /* Submit button matching user's reference */
 .btn-submit-action {
   width: 100%;
-  height: 46px;
-  background: linear-gradient(135deg, #78be20, #65a30d);
-  color: #ffffff;
+  height: 48px;
+  background: #73D700;
+  color: #111827;
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   margin-top: 0.5rem;
-  box-shadow: 0 4px 14px rgba(101, 163, 13, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(115, 215, 0, 0.35);
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .btn-submit-action:hover {
+  background: #68c500;
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(101, 163, 13, 0.45);
+  box-shadow: 0 6px 18px rgba(115, 215, 0, 0.45);
 }
 
 .btn-submit-action:active {

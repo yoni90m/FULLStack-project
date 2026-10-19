@@ -25,7 +25,8 @@ const ProtectedRoute = ({ children, roles }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (roles && roles.length > 0 && !roles.includes(user?.role)) {
+  // Super Admin has access to all protected routes
+  if (roles && roles.length > 0 && user?.role !== 'Super Admin' && !roles.includes(user?.role)) {
     return <AccessDeniedPage requiredRoles={roles} />;
   }
 

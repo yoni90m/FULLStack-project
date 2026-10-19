@@ -16,6 +16,7 @@ from backend.routes.booking_routes import booking_bp
 from backend.routes.payment_routes import payment_bp
 from backend.routes.report_routes import report_bp
 from backend.routes.tracking_routes import tracking_bp
+from backend.routes.worker_routes import worker_bp
 
 def create_app():
     root_dir = Path(__file__).resolve().parent.parent
@@ -46,6 +47,7 @@ def create_app():
     app.register_blueprint(payment_bp, url_prefix='/api/payments')
     app.register_blueprint(report_bp, url_prefix='/api/reports')
     app.register_blueprint(tracking_bp, url_prefix='/api/tracking')
+    app.register_blueprint(worker_bp, url_prefix='/api')
 
     # ── Security Headers Middleware ──
     @app.after_request
@@ -67,8 +69,8 @@ def create_app():
             "img-src 'self' data: https:; "
             "connect-src 'self' http://localhost:* http://127.0.0.1:* ws: wss:;"
         )
-        # Permissions policy
-        response.headers['Permissions-Policy'] = 'geolocation=(), camera=(), microphone=()'
+        # Permissions policy (allow geolocation for own origin for live GPS map navigation)
+        response.headers['Permissions-Policy'] = 'geolocation=(self), camera=(), microphone=()'
         # Cache control for API responses and HTML SPA files
         if request.path.startswith('/api/') or response.mimetype == 'text/html':
             response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'

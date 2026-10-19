@@ -16,6 +16,7 @@ const Sidebar = ({ onNavigate }) => {
     { path: '/buses', icon: '🚍', label: t('busFleet') },
     { path: '/routes', icon: '🗺️', label: t('routes') },
     { path: '/schedules', icon: '🕒', label: t('schedules') },
+    { path: '/workers', icon: '🛡️', label: 'Workers', adminOnly: true },
     { path: '/drivers', icon: '👨‍✈️', label: t('drivers'), adminOnly: true },
     { path: '/passengers', icon: '👥', label: t('passengers'), adminOnly: true },
     { 
@@ -29,6 +30,7 @@ const Sidebar = ({ onNavigate }) => {
   ];
 
   // Remove admin-only navigation links for passengers and non-admins
+  // Super Admin and Admin both see admin-only items
   const navItems = allNavItems.filter(item => {
     if (item.adminOnly && !isAdmin) return false;
     // Driver doesn't need to book passenger tickets directly from sidebar

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Nav, Form, Button, Alert, Table, Badge } from 'react-bootstrap';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Container, Row, Col, Card, Nav, Form, Button, Alert, Table, Badge, Modal, Spinner, InputGroup } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 
 const SettingsPage = () => {
@@ -22,6 +22,23 @@ const SettingsPage = () => {
     oldPassword: '',
     newPassword: '',
     confirmPassword: ''
+  });
+
+  // User Accounts & Password Reset State (Admin Only)
+  const [usersList, setUsersList] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [userSearch, setUserSearch] = useState('');
+  const [userRoleFilter, setUserRoleFilter] = useState('all');
+  const [resetModal, setResetModal] = useState({
+    show: false,
+    user: null,
+    mode: 'auto', // 'auto' or 'custom'
+    customPassword: '',
+    showPassword: false,
+    loading: false,
+    result: null,
+    copied: false,
+    error: ''
   });
 
   // Admin System Settings State
@@ -74,6 +91,120 @@ const SettingsPage = () => {
         .catch(() => {});
     }
   }, [authFetch, isAdmin]);
+
+  // Load users when users tab is opened
+  const fetchUsers = useCallback(async () => {
+    if (!authFetch || !isAdmin) return;
+    setUsersLoading(true);
+    try {
+      const res = await authFetch('/auth/users');
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setUsersList(data.data);
+      }
+    } catch (err) {
+      console.error('Failed to load users:', err);
+    } finally {
+      setUsersLoading(false);
+    }
+  }, [authFetch, isAdmin]);
+
+  useEffect(() => {
+    if (activeTab === 'users' && isAdmin) {
+      fetchUsers();
+    }
+  }, [activeTab, isAdmin, fetchUsers]);
+
+  const openResetModal = (u) => {
+    setResetModal({
+      show: true,
+      user: u,
+      mode: 'auto',
+      customPassword: '',
+      showPassword: false,
+      loading: false,
+      result: null,
+      copied: false,
+      error: ''
+    });
+  };
+
+  const closeResetModal = () => {
+    setResetModal({
+      show: false,
+      user: null,
+      mode: 'auto',
+      customPassword: '',
+      showPassword: false,
+      loading: false,
+      result: null,
+      copied: false,
+      error: ''
+    });
+  };
+
+  const handleAdminPasswordReset = async (e) => {
+    if (e) e.preventDefault();
+    if (!resetModal.user) return;
+
+    if (resetModal.mode === 'custom') {
+      if (!resetModal.customPassword || resetModal.customPassword.trim().length < 6) {
+        setResetModal(prev => ({ ...prev, error: 'Custom password must be at least 6 characters long.' }));
+        return;
+      }
+    }
+
+    setResetModal(prev => ({ ...prev, loading: true, error: '' }));
+    try {
+      const payload = {
+        user_id: resetModal.user.user_id,
+        ...(resetModal.mode === 'custom' ? { new_password: resetModal.customPassword.trim() } : {})
+      };
+
+      const res = await authFetch('/auth/admin/reset-password', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Password reset failed');
+      }
+
+      setResetModal(prev => ({
+        ...prev,
+        loading: false,
+        result: data.data,
+        error: ''
+      }));
+
+      showAlert('success', `Password for ${resetModal.user.username} was successfully reset!`);
+    } catch (err) {
+      setResetModal(prev => ({
+        ...prev,
+        loading: false,
+        error: err.message || 'Failed to reset password.'
+      }));
+    }
+  };
+
+  const copyCredentials = (username, password) => {
+    const text = `Username: ${username}\nNew Password: ${password}`;
+    navigator.clipboard.writeText(text).then(() => {
+      setResetModal(prev => ({ ...prev, copied: true }));
+      setTimeout(() => setResetModal(prev => ({ ...prev, copied: false })), 3000);
+    });
+  };
+
+  const filteredUsers = usersList.filter(u => {
+    const s = userSearch.toLowerCase();
+    const matchesSearch =
+      (u.username || '').toLowerCase().includes(s) ||
+      (u.email || '').toLowerCase().includes(s) ||
+      (u.full_name || '').toLowerCase().includes(s) ||
+      (u.phone || '').toLowerCase().includes(s);
+    const matchesRole = userRoleFilter === 'all' || u.role === userRoleFilter;
+    return matchesSearch && matchesRole;
+  });
 
   const showAlert = (variant, message) => {
     setAlert({ show: true, variant, message });
@@ -197,6 +328,15 @@ const SettingsPage = () => {
               </Nav.Item>
               {isAdmin && (
                 <>
+                  <Nav.Item>
+                    <Nav.Link
+                      active={activeTab === 'users'}
+                      onClick={() => setActiveTab('users')}
+                      className="rounded-3 text-white d-flex align-items-center gap-2 cursor-pointer"
+                    >
+                      🔑 User Accounts & Reset
+                    </Nav.Link>
+                  </Nav.Item>
                   <Nav.Item>
                     <Nav.Link
                       active={activeTab === 'system'}
@@ -498,8 +638,330 @@ const SettingsPage = () => {
               </div>
             </Card>
           )}
+
+          {/* 6. Admin User Accounts & Password Reset */}
+          {activeTab === 'users' && isAdmin && (
+            <Card className="border-0 shadow-sm rounded-4 bg-dark text-white p-4">
+              <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div>
+                  <h5 className="fw-bold mb-1">🔑 User Accounts & Password Reset</h5>
+                  <p className="text-white-50 small mb-0">
+                    Search and reset lost or forgotten passwords for passengers, drivers, and administrators.
+                  </p>
+                </div>
+                <Button
+                  variant="outline-info"
+                  size="sm"
+                  className="rounded-pill px-3"
+                  onClick={fetchUsers}
+                  disabled={usersLoading}
+                >
+                  🔄 {usersLoading ? 'Refreshing...' : 'Refresh List'}
+                </Button>
+              </div>
+
+              {/* Stats KPI pills */}
+              <Row className="g-3 mb-4">
+                <Col sm={3} xs={6}>
+                  <div className="p-3 rounded-3 bg-secondary bg-opacity-25 border border-secondary border-opacity-25">
+                    <div className="text-white-50 small">Total Accounts</div>
+                    <div className="h4 fw-bold text-white mb-0">{usersList.length}</div>
+                  </div>
+                </Col>
+                <Col sm={3} xs={6}>
+                  <div className="p-3 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25">
+                    <div className="text-white-50 small">Passengers</div>
+                    <div className="h4 fw-bold text-success mb-0">
+                      {usersList.filter(u => u.role === 'Passenger').length}
+                    </div>
+                  </div>
+                </Col>
+                <Col sm={3} xs={6}>
+                  <div className="p-3 rounded-3 bg-primary bg-opacity-10 border border-primary border-opacity-25">
+                    <div className="text-white-50 small">Drivers</div>
+                    <div className="h4 fw-bold text-info mb-0">
+                      {usersList.filter(u => u.role === 'Driver').length}
+                    </div>
+                  </div>
+                </Col>
+                <Col sm={3} xs={6}>
+                  <div className="p-3 rounded-3 bg-danger bg-opacity-10 border border-danger border-opacity-25">
+                    <div className="text-white-50 small">Admins</div>
+                    <div className="h4 fw-bold text-danger mb-0">
+                      {usersList.filter(u => u.role === 'Admin').length}
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+
+              {/* Filters */}
+              <Row className="g-2 mb-3">
+                <Col md={7}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by username, full name, phone, or email..."
+                    className="bg-secondary bg-opacity-25 text-white border-secondary rounded-3"
+                    value={userSearch}
+                    onChange={e => setUserSearch(e.target.value)}
+                  />
+                </Col>
+                <Col md={5}>
+                  <Form.Select
+                    className="bg-secondary bg-opacity-25 text-white border-secondary rounded-3"
+                    value={userRoleFilter}
+                    onChange={e => setUserRoleFilter(e.target.value)}
+                  >
+                    <option value="all">All Roles</option>
+                    <option value="Passenger">Passengers Only</option>
+                    <option value="Driver">Drivers Only</option>
+                    <option value="Admin">Administrators Only</option>
+                  </Form.Select>
+                </Col>
+              </Row>
+
+              {/* Users Table */}
+              <div className="table-responsive">
+                {usersLoading ? (
+                  <div className="text-center py-5">
+                    <Spinner animation="border" variant="info" />
+                    <p className="text-white-50 mt-2 small">Loading system accounts...</p>
+                  </div>
+                ) : (
+                  <Table hover className="align-middle mb-0 text-white">
+                    <thead className="table-light">
+                      <tr>
+                        <th>User</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredUsers.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="text-center py-4 text-white-50">
+                            No accounts match your search filters.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredUsers.map(u => (
+                          <tr key={u.user_id}>
+                            <td>
+                              <div className="d-flex align-items-center gap-2">
+                                <div
+                                  className="rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                                  style={{
+                                    width: 34,
+                                    height: 34,
+                                    background:
+                                      u.role === 'Admin'
+                                        ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                                        : u.role === 'Driver'
+                                        ? 'linear-gradient(135deg, #3b82f6, #06b6d4)'
+                                        : 'linear-gradient(135deg, #10b981, #059669)',
+                                    color: '#fff',
+                                    fontSize: '0.85rem'
+                                  }}
+                                >
+                                  {(u.full_name || u.username || 'U').charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                  <div className="fw-semibold">{u.full_name || u.username}</div>
+                                  <small className="text-white-50">ID #{u.user_id}</small>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <code className="text-info">{u.username}</code>
+                            </td>
+                            <td className="small">{u.email}</td>
+                            <td className="small text-white-50">{u.phone || 'N/A'}</td>
+                            <td>
+                              <Badge
+                                bg={u.role === 'Admin' ? 'danger' : u.role === 'Driver' ? 'primary' : 'success'}
+                                className="rounded-pill px-3 py-1"
+                              >
+                                {u.role}
+                              </Badge>
+                            </td>
+                            <td>
+                              <Badge
+                                bg={u.status === 'Active' ? 'success' : 'secondary'}
+                                className="rounded-pill px-2 py-1"
+                              >
+                                {u.status || 'Active'}
+                              </Badge>
+                            </td>
+                            <td>
+                              <Button
+                                size="sm"
+                                variant="outline-warning"
+                                className="rounded-pill px-3 py-1 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm"
+                                onClick={() => openResetModal(u)}
+                                id={`btn-reset-user-${u.user_id}`}
+                              >
+                                <span>🔑</span> Reset
+                              </Button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </Table>
+                )}
+              </div>
+            </Card>
+          )}
         </Col>
       </Row>
+
+      {/* ═══════════════════════════════════════════════════════
+          ADMIN PASSWORD RESET MODAL
+         ═══════════════════════════════════════════════════════ */}
+      <Modal
+        show={resetModal.show}
+        onHide={closeResetModal}
+        centered
+        contentClassName="bg-dark text-white border-0 shadow-lg rounded-4"
+      >
+        <Modal.Header closeButton closeVariant="white" className="border-secondary border-opacity-25">
+          <Modal.Title className="fw-bold fs-5">
+            🔑 Reset Password for {resetModal.user?.username}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="py-4">
+          {resetModal.error && (
+            <Alert variant="danger" className="rounded-3 py-2 small mb-3">
+              {resetModal.error}
+            </Alert>
+          )}
+
+          {resetModal.result ? (
+            <div className="text-center py-2">
+              <div className="fs-1 mb-2">🎉</div>
+              <h5 className="fw-bold text-success mb-2">Password Successfully Reset!</h5>
+              <p className="text-white-50 small mb-3">
+                The account password has been updated. Provide these new credentials to the user.
+              </p>
+              
+              <div className="p-3 rounded-3 bg-secondary bg-opacity-25 border border-secondary border-opacity-50 text-start mb-3">
+                <div className="small text-muted mb-1">Account Username:</div>
+                <div className="fw-bold text-info mb-2 fs-6">{resetModal.result.username}</div>
+                <div className="small text-muted mb-1">User Email:</div>
+                <div className="text-white mb-2 fs-6">{resetModal.result.email}</div>
+                <div className="small text-muted mb-1">New Temporary Password:</div>
+                <div className="fw-bold text-warning fs-5 font-monospace">{resetModal.result.new_password}</div>
+              </div>
+
+              <div className="d-flex gap-2 justify-content-center">
+                <Button
+                  variant={resetModal.copied ? "success" : "primary"}
+                  className="rounded-pill px-4 fw-semibold"
+                  onClick={() => copyCredentials(resetModal.result.username, resetModal.result.new_password)}
+                >
+                  {resetModal.copied ? "✅ Copied to Clipboard!" : "📋 Copy Credentials"}
+                </Button>
+                <Button
+                  variant="outline-light"
+                  className="rounded-pill px-4"
+                  onClick={closeResetModal}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="p-3 mb-3 rounded-3 bg-secondary bg-opacity-25 border border-secondary border-opacity-25">
+                <div className="small text-white-50">Target User Account:</div>
+                <div className="fw-bold fs-6 text-white">{resetModal.user?.full_name || resetModal.user?.username}</div>
+                <div className="small text-info">{resetModal.user?.email} • Role: {resetModal.user?.role}</div>
+              </div>
+
+              <Form onSubmit={handleAdminPasswordReset}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="small text-muted fw-semibold">Reset Option</Form.Label>
+                  <div className="d-flex flex-column gap-2 mt-1">
+                    <Form.Check
+                      type="radio"
+                      id="opt-auto"
+                      name="resetMode"
+                      label="Auto-generate secure temporary password (e.g. TransLink#5829)"
+                      checked={resetModal.mode === 'auto'}
+                      onChange={() => setResetModal(prev => ({ ...prev, mode: 'auto', error: '' }))}
+                      className="small"
+                    />
+                    <Form.Check
+                      type="radio"
+                      id="opt-custom"
+                      name="resetMode"
+                      label="Specify custom new password"
+                      checked={resetModal.mode === 'custom'}
+                      onChange={() => setResetModal(prev => ({ ...prev, mode: 'custom', error: '' }))}
+                      className="small"
+                    />
+                  </div>
+                </Form.Group>
+
+                {resetModal.mode === 'custom' && (
+                  <Form.Group className="mb-3">
+                    <Form.Label className="small text-muted">New Password (min. 6 characters)</Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type={resetModal.showPassword ? "text" : "password"}
+                        placeholder="Enter new password"
+                        className="bg-secondary bg-opacity-25 text-white border-secondary rounded-start-3"
+                        value={resetModal.customPassword}
+                        onChange={e => setResetModal(prev => ({ ...prev, customPassword: e.target.value, error: '' }))}
+                        required
+                      />
+                      <Button
+                        variant="outline-secondary"
+                        className="rounded-end-3 text-white-50"
+                        type="button"
+                        onClick={() => setResetModal(prev => ({ ...prev, showPassword: !prev.showPassword }))}
+                      >
+                        {resetModal.showPassword ? "🙈" : "👁️"}
+                      </Button>
+                    </InputGroup>
+                  </Form.Group>
+                )}
+
+                <p className="text-white-50 small mb-4">
+                  {resetModal.mode === 'auto'
+                    ? "A secure randomized password will be generated upon confirmation. You can copy and hand it to the user."
+                    : "The password will be immediately updated to what you typed above."}
+                </p>
+
+                <div className="d-flex justify-content-end gap-2">
+                  <Button variant="secondary" className="rounded-pill px-4" onClick={closeResetModal}>
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="warning"
+                    type="submit"
+                    className="rounded-pill px-4 fw-bold"
+                    disabled={resetModal.loading}
+                    id="btn-confirm-reset-password"
+                  >
+                    {resetModal.loading ? (
+                      <>
+                        <Spinner animation="border" size="sm" className="me-2" />
+                        Resetting...
+                      </>
+                    ) : (
+                      "Confirm & Reset Password"
+                    )}
+                  </Button>
+                </div>
+              </Form>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };

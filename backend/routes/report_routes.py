@@ -136,3 +136,61 @@ def save_settings():
         "timestamp": "Just now"
     })
     return json_response(True, "System settings updated successfully.", SYSTEM_SETTINGS)
+
+CONTACT_INQUIRIES = [
+    {
+        "id": "INQ-A82F10",
+        "name": "Marta Tefera",
+        "email": "marta.tefera@gmail.com",
+        "phone": "+251 911 234 567",
+        "subject": "Luggage Allowance Inquiry",
+        "booking_reference": "TRIP-88201",
+        "message": "Can I bring two 25kg suitcases on the Addis Ababa to Bahir Dar morning bus?",
+        "status": "Replied",
+        "created_at": "2026-10-18 11:20:00"
+    }
+]
+
+@report_bp.route('/contact', methods=['POST'])
+def submit_contact_inquiry():
+    from flask import request
+    import datetime, secrets
+    data = request.get_json() or {}
+    name = str(data.get('name') or '').strip()
+    email = str(data.get('email') or '').strip()
+    message = str(data.get('message') or '').strip()
+    subject = str(data.get('subject') or 'General Inquiry').strip()
+    phone = str(data.get('phone') or '').strip()
+    booking_ref = str(data.get('booking_reference') or '').strip()
+
+    if not name or not email or not message:
+        return json_response(False, "Please provide your name, email address, and message.", status_code=400)
+
+    inquiry_id = f"INQ-{secrets.token_hex(3).upper()}"
+    inquiry = {
+        "id": inquiry_id,
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "subject": subject,
+        "booking_reference": booking_ref,
+        "message": message,
+        "status": "Received",
+        "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    CONTACT_INQUIRIES.insert(0, inquiry)
+    AUDIT_LOGS.insert(0, {
+        "id": len(AUDIT_LOGS) + 1,
+        "username": email,
+        "action": "CONTACT_FORM_SUBMISSION",
+        "details": f"Inquiry {inquiry_id}: {subject} from {name}",
+        "timestamp": inquiry["created_at"]
+    })
+    return json_response(True, "Thank you! Your message has been received. Our team will contact you shortly.", inquiry, status_code=201)
+
+@report_bp.route('/contact', methods=['GET'])
+@auth_required
+@role_required('Admin')
+def get_contact_inquiries():
+    return json_response(True, "Contact inquiries retrieved.", CONTACT_INQUIRIES)
+

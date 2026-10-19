@@ -59,3 +59,35 @@ class User:
         params.append(user_id)
         query = f"UPDATE users SET {', '.join(updates)} WHERE user_id = %s"
         return execute_query(query, tuple(params), commit=True)
+
+    @staticmethod
+    def get_all(role=None, search=None):
+        """
+        Retrieve all user accounts with associated profile details from passengers or drivers.
+        """
+        query = """
+            SELECT 
+                u.user_id, 
+                u.username, 
+                u.email, 
+                u.role, 
+                u.status, 
+                u.created_at,
+                COALESCE(p.name, d.name, u.username) AS full_name,
+                COALESCE(p.phone, d.phone, 'N/A') AS phone
+            FROM users u
+            LEFT JOIN passengers p ON u.user_id = p.user_id
+            LEFT JOIN drivers d ON u.user_id = d.user_id
+            WHERE 1=1
+        """
+        params = []
+        if role and role.lower() != 'all':
+            query += " AND LOWER(u.role) = LOWER(%s)"
+            params.append(role)
+        if search:
+            query += " AND (u.username ILIKE %s OR u.email ILIKE %s OR p.name ILIKE %s OR d.name ILIKE %s)"
+            search_param = f"%{search}%"
+            params.extend([search_param, search_param, search_param, search_param])
+        query += " ORDER BY u.user_id ASC"
+        rows = execute_query(query, tuple(params) if params else None, fetch_all=True)
+        return [serialize_row(r) for r in (rows or [])]

@@ -94,6 +94,11 @@ def role_required(*allowed_roles):
 
             user_role = str(user.get("role", "")).strip().lower()
             allowed_lower = [str(r).strip().lower() for r in allowed_roles]
+
+            # Super Admin has master clearance for all routes
+            if user_role == "super admin":
+                return f(*args, **kwargs)
+
             if user_role not in allowed_lower:
                 return {
                     "success": False,

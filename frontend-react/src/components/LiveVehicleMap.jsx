@@ -311,8 +311,22 @@ const LiveVehicleMap = ({
         }
       },
       (err) => {
-        alert('Could not retrieve your location: ' + err.message);
-      }
+        console.warn('Geolocation notice:', err.message);
+        let userMsg = 'Unable to access your location: ' + err.message;
+        if (err.code === 1) {
+          userMsg = 'Location access is blocked. Please enable location permissions for this site in your browser settings / address bar.';
+        } else if (err.code === 2) {
+          userMsg = 'Current location signal unavailable. Centering on the central transit hub.';
+        } else if (err.code === 3) {
+          userMsg = 'Location request timed out. Centering on the central transit hub.';
+        }
+        // Graceful fallback to central terminal
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.flyTo([9.0108, 38.7616], 13, { animate: true });
+        }
+        alert(userMsg);
+      },
+      { timeout: 8000, enableHighAccuracy: true }
     );
   };
 

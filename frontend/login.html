@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — TransLink Bus Transportation System</title>
-  <meta name="description" content="Sign in to your TransLink account to manage bus operations or book trips.">
+  <title>Log in — TransLink Ethiopian Bus</title>
+  <meta name="description" content="Sign in to your TransLink account to manage Ethiopian bus operations and book intercity trips.">
   <link rel="icon" type="image/jpeg" href="assets/icons/translink-icon.jpg">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/forms.css">
@@ -14,37 +14,61 @@
 
   <div class="auth-page">
     <div class="auth-card">
-      <div class="auth-header">
-        <a href="index.html" class="auth-brand">
-          <img src="assets/icons/translink-icon.jpg" alt="TransLink Logo">
-          <span>Trans<span style="color: #0ea5e9;">Link</span></span>
-        </a>
-        <h1>Welcome Back</h1>
-        <p>Sign in to access your transportation portal</p>
+      <!-- Logo Badge -->
+      <div style="text-align: center; margin-bottom: 0.85rem;">
+        <span style="background: #73D700; color: #ffffff; font-family: var(--font-heading, sans-serif); font-size: 1.45rem; font-weight: 900; padding: 0.35rem 1.2rem; border-radius: 8px; display: inline-block; box-shadow: 0 4px 12px rgba(115, 215, 0, 0.35); letter-spacing: -0.5px;">TRANSLINK</span>
+      </div>
+
+      <div class="auth-header" style="margin-bottom: 0.8rem;">
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: #191919; margin-bottom: 0.5rem;">Log in</h1>
+        <ul class="auth-checklist">
+          <li><span class="check-icon" style="color: #73D700;">✓</span> Full control over your bookings anytime</li>
+          <li><span class="check-icon" style="color: #73D700;">✓</span> Get travel updates & SMS alerts</li>
+          <li><span class="check-icon" style="color: #73D700;">✓</span> Track your Ethiopian bus in real-time</li>
+        </ul>
       </div>
 
       <form id="login-form">
         <div class="form-group">
-          <label class="form-label" for="login-email">Username or Email <span class="required">*</span></label>
-          <input type="text" id="login-email" class="form-control" placeholder="admin or admin@translink.com" required autocomplete="username" autofocus>
+          <label class="form-label" for="login-email">Email or Username <span class="required">*</span></label>
+          <input type="text" id="login-email" class="form-control" placeholder="name@translink.et or username" required autocomplete="username" autofocus>
         </div>
 
         <div class="form-group">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
             <label class="form-label" for="login-password" style="margin-bottom: 0;">Password <span class="required">*</span></label>
           </div>
-          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+
+        <!-- 1-Click Fast Demo Fill -->
+        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 0.6rem 0.5rem; margin-bottom: 0.8rem; text-align: center;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.35rem;">1-Click Demo Login:</div>
+          <div style="display: flex; gap: 0.35rem; justify-content: center; flex-wrap: wrap;">
+            <button type="button" class="quick-role-btn" onclick="document.getElementById('login-email').value='admin';document.getElementById('login-password').value='admin123';">👑 Admin</button>
+            <button type="button" class="quick-role-btn" onclick="document.getElementById('login-email').value='driver1';document.getElementById('login-password').value='driver123';">👨‍✈️ Driver</button>
+            <button type="button" class="quick-role-btn" onclick="document.getElementById('login-email').value='passenger1';document.getElementById('login-password').value='passenger123';">👥 Passenger</button>
+          </div>
         </div>
 
         <button type="submit" id="btn-login-submit" class="btn-submit-action">
-          Sign In
+          Continue
         </button>
       </form>
 
-      <div class="auth-footer">
-        <p>Don't have an account? <a href="register.html" style="font-weight: 700;">👤 Register as Passenger</a></p>
-        <div style="margin-top: 0.5rem;">
-          <a href="index.html" style="color: #64748b; font-size: 0.8rem;">← Back to Homepage</a>
+      <div class="auth-footer" style="margin-top: 1rem;">
+        <p style="color: #4b5563; font-size: 0.88rem; margin-bottom: 0.3rem;">
+          Don't have an account? <a href="register.html" style="color: #111827; font-weight: 700;">👤 Register here</a>
+        </p>
+
+        <!-- Terms Disclaimer -->
+        <div class="auth-terms" style="margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid #f1f5f9; font-size: 0.72rem; color: #6b7280; line-height: 1.45;">
+          <p style="margin-bottom: 0.35rem;">We use your email address to send booking confirmations and departure alerts across Ethiopian bus corridors.</p>
+          <p style="margin-bottom: 0.2rem;">By logging in, you agree to our <a href="#" style="color: #2563eb;">Terms & Conditions</a>. TransLink Ethiopian Intercity Bus Transportation System.</p>
+        </div>
+
+        <div style="margin-top: 0.6rem;">
+          <a href="index.html" style="color: #64748b; font-size: 0.82rem; text-decoration: none;">← Back to Homepage</a>
         </div>
       </div>
     </div>

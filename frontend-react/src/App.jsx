@@ -19,7 +19,9 @@ import PassengersPage from './pages/PassengersPage';
 import PaymentsPage from './pages/PaymentsPage';
 import ReportsPage from './pages/ReportsPage';
 import SchedulesPage from './pages/SchedulesPage';
+import WorkersPage from './pages/WorkersPage';
 import SettingsPage from './pages/SettingsPage';
+import ContactPage from './pages/ContactPage';
 import NotFoundPage from './pages/NotFoundPage';
 import './App.css';
 
@@ -37,9 +39,12 @@ function AppLayout() {
     navigate('/');
   };
 
-  // Landing page and login page have their own full-width layout
-  if (location.pathname === '/') {
+  // Full-width public and landing pages
+  if (location.pathname === '/' || location.pathname === '/home') {
     return <Landing />;
+  }
+  if (location.pathname === '/contact') {
+    return <ContactPage />;
   }
   if (location.pathname === '/login') {
     return <LoginPage />;
@@ -99,6 +104,9 @@ function AppLayout() {
 
         {/* Page Routes — All protected */}
         <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/home" element={<Landing />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/tracking" element={<ProtectedRoute><LiveTrackingPage /></ProtectedRoute>} />
           <Route path="/buses" element={<ProtectedRoute><BusesPage /></ProtectedRoute>} />
@@ -106,6 +114,7 @@ function AppLayout() {
           <Route path="/schedules" element={<ProtectedRoute><SchedulesPage /></ProtectedRoute>} />
           <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
           <Route path="/drivers" element={<ProtectedRoute roles={['Admin']}><DriversPage /></ProtectedRoute>} />
+          <Route path="/workers" element={<ProtectedRoute roles={['Admin', 'Super Admin']}><WorkersPage /></ProtectedRoute>} />
           <Route path="/passengers" element={<ProtectedRoute roles={['Admin']}><PassengersPage /></ProtectedRoute>} />
           <Route path="/payments" element={<ProtectedRoute roles={['Admin']}><PaymentsPage /></ProtectedRoute>} />
           <Route path="/reports" element={<ProtectedRoute roles={['Admin']}><ReportsPage /></ProtectedRoute>} />

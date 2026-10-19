@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Passenger Registration — TransLink</title>
-  <meta name="description" content="Register as a passenger to book trips, reserve seats, and manage travel on TransLink.">
+  <title>Register — TransLink Ethiopian Bus</title>
+  <meta name="description" content="Register as a passenger to book Ethiopian intercity buses, reserve seats, and track trips in real-time.">
   <link rel="icon" type="image/jpeg" href="assets/icons/translink-icon.jpg">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/forms.css">
@@ -14,16 +14,17 @@
 
   <div class="auth-page">
     <div class="auth-card">
-      <div class="auth-header">
-        <a href="index.html" class="auth-brand">
-          <img src="assets/icons/translink-icon.jpg" alt="TransLink Logo">
-          <span>Trans<span style="color: #0ea5e9;">Link</span></span>
-        </a>
-        <h1>Register</h1>
+      <!-- Logo Badge -->
+      <div style="text-align: center; margin-bottom: 0.85rem;">
+        <span style="background: #73D700; color: #ffffff; font-family: var(--font-heading, sans-serif); font-size: 1.45rem; font-weight: 900; padding: 0.35rem 1.2rem; border-radius: 8px; display: inline-block; box-shadow: 0 4px 12px rgba(115, 215, 0, 0.35); letter-spacing: -0.5px;">TRANSLINK</span>
+      </div>
+
+      <div class="auth-header" style="margin-bottom: 0.8rem;">
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: #191919; margin-bottom: 0.5rem;">Register</h1>
         <ul class="auth-checklist">
-          <li><span class="check-icon">✓</span> Full control over your bookings anytime</li>
-          <li><span class="check-icon">✓</span> Get travel updates & SMS confirmations</li>
-          <li><span class="check-icon">✓</span> Track your coach in real-time</li>
+          <li><span class="check-icon" style="color: #73D700;">✓</span> Full control over your bookings anytime</li>
+          <li><span class="check-icon" style="color: #73D700;">✓</span> Get travel updates & SMS alerts</li>
+          <li><span class="check-icon" style="color: #73D700;">✓</span> Track your Ethiopian bus in real-time</li>
         </ul>
       </div>
 
@@ -31,7 +32,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="reg-name">Full Name <span class="required">*</span></label>
-            <input type="text" id="reg-name" class="form-control" placeholder="e.g. Abebe Bikila" required>
+            <input type="text" id="reg-name" class="form-control" placeholder="e.g. Abebe Bekele" required>
           </div>
           <div class="form-group">
             <label class="form-label" for="reg-username">Username <span class="required">*</span></label>
@@ -41,12 +42,12 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="reg-email">Email Address <span class="required">*</span></label>
-            <input type="email" id="reg-email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+            <label class="form-label" for="reg-email">Email <span class="required">*</span></label>
+            <input type="email" id="reg-email" class="form-control" placeholder="name@translink.et" required autocomplete="email">
           </div>
           <div class="form-group">
-            <label class="form-label" for="reg-phone">Phone Number <span class="required">*</span></label>
-            <input type="tel" id="reg-phone" class="form-control" placeholder="+251 91 123 4567" required>
+            <label class="form-label" for="reg-phone">Phone (Ethiopian Mobile)</label>
+            <input type="tel" id="reg-phone" class="form-control" placeholder="+251 911 234 567">
           </div>
         </div>
 
@@ -63,36 +64,42 @@
 
         <div class="form-row">
           <div class="form-group" style="flex: 2;">
-            <label class="form-label" for="reg-schedule">🚍 Select Assigned Bus & Trip <span class="required">*</span></label>
+            <label class="form-label" for="reg-schedule">🚍 Select Assigned Ethiopian Bus & Trip <span class="required">*</span></label>
             <select id="reg-schedule" class="form-control" required>
-              <option value="">-- Choose Your Bus & Route --</option>
-              <option value="1">🚍 BUS-101 (Volvo 9700) • Addis Ababa → Bahir Dar (08:00 AM)</option>
-              <option value="2">🚍 BUS-102 (Tourismo) • Addis Ababa → Bahir Dar (02:00 PM)</option>
-              <option value="3">🚍 BUS-103 (Scania HD) • Addis Ababa → Hawassa (09:30 AM)</option>
-              <option value="4">🚍 BUS-104 (MCI Coach) • Addis Ababa → Dire Dawa (10:00 AM)</option>
-              <option value="5">🚍 BUS-106 (Setra S 515) • Addis Ababa → Mekelle (07:30 AM)</option>
+              <option value="">-- Choose Your Ethiopian Bus & Route --</option>
+              <option value="1">🚍 BUS-101 (Volvo 9700 Luxury) • Addis Ababa → Bahir Dar (08:00 AM)</option>
+              <option value="2">🚍 BUS-102 (Mercedes Tourismo) • Addis Ababa → Hawassa (02:00 PM)</option>
+              <option value="3">🚍 BUS-103 (Scania Intercity) • Addis Ababa → Dire Dawa (09:30 AM)</option>
+              <option value="4">🚍 BUS-104 (MCI Golden Express) • Addis Ababa → Jimma (10:00 AM)</option>
+              <option value="5">🚍 BUS-105 (Setra High-Deck) • Addis Ababa → Gondar (07:00 AM)</option>
+              <option value="6">🚍 BUS-106 (Yutong Long Distance) • Addis Ababa → Mekelle (06:00 AM)</option>
             </select>
           </div>
           <div class="form-group" style="flex: 1;">
             <label class="form-label" for="reg-seat">💺 Seat (Optional)</label>
-            <input type="text" id="reg-seat" class="form-control" placeholder="e.g. 1A (Auto if blank)" maxlength="3">
+            <input type="text" id="reg-seat" class="form-control" placeholder="e.g. 1A" maxlength="3">
           </div>
         </div>
 
         <button type="submit" id="btn-register-submit" class="btn-submit-action">
-          Register & Book Bus Seat
+          Continue
         </button>
       </form>
 
-      <div class="auth-footer">
-        <p>Already have an account? <a href="login.html" style="font-weight: 700;">👤 Sign in here</a></p>
-        <div style="margin-top: 0.5rem;">
-          <a href="index.html" style="color: #64748b; font-size: 0.8rem;">← Back to Homepage</a>
-        </div>
-      </div>
+      <div class="auth-footer" style="margin-top: 1rem;">
+        <p style="color: #4b5563; font-size: 0.88rem; margin-bottom: 0.3rem;">
+          Already have an account? <a href="login.html" style="color: #111827; font-weight: 700;">👤 Sign in here</a>
+        </p>
 
-      <div class="auth-terms">
-        By creating an account, you agree to our <a href="#">Terms & Conditions</a>. Your account is managed by TransLink Ethiopian Transportation System and processed in accordance with our <a href="#">Privacy Policy</a>.
+        <!-- Terms Disclaimer -->
+        <div class="auth-terms" style="margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid #f1f5f9; font-size: 0.72rem; color: #6b7280; line-height: 1.45;">
+          <p style="margin-bottom: 0.35rem;">We use your email address to send booking confirmations, seat assignments, and trip reminders across Ethiopian bus routes.</p>
+          <p style="margin-bottom: 0.2rem;">By creating an account, you agree to our <a href="#" style="color: #2563eb;">Terms of Carriage</a> and <a href="#" style="color: #2563eb;">Privacy Policy</a>. TransLink Ethiopian Intercity Bus Transportation System.</p>
+        </div>
+
+        <div style="margin-top: 0.6rem;">
+          <a href="index.html" style="color: #64748b; font-size: 0.82rem; text-decoration: none;">← Back to Homepage</a>
+        </div>
       </div>
     </div>
   </div>

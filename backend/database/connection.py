@@ -25,6 +25,8 @@ TABLE_PK_MAP = {
 
 def _get_postgres_connection(dbname=None):
     """Establish a connection to PostgreSQL using psycopg2."""
+    if Config.DATABASE_URL and dbname is None:
+        return psycopg2.connect(Config.DATABASE_URL)
     db_to_connect = dbname if dbname is not None else Config.DB_NAME
     return psycopg2.connect(
         host=Config.DB_HOST,
@@ -40,21 +42,22 @@ def _init_postgres_db(force=False):
     """
     from werkzeug.security import generate_password_hash
 
-    # 1. Connect to maintenance 'postgres' database to ensure application database exists
-    try:
-        conn = _get_postgres_connection(dbname='postgres')
-        conn.autocommit = True
-        cur = conn.cursor()
-        cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (Config.DB_NAME,))
-        exists = cur.fetchone()
-        if not exists:
-            cur.execute(f'CREATE DATABASE "{Config.DB_NAME}"')
-            print(f"[PostgreSQL]: Created database '{Config.DB_NAME}' successfully.")
-        cur.close()
-        conn.close()
-    except Exception:
-        # Ignore error if database already exists or user doesn't have CREATE DATABASE permission
-        pass
+    # 1. Connect to maintenance 'postgres' database to ensure application database exists (local only)
+    if not Config.DATABASE_URL:
+        try:
+            conn = _get_postgres_connection(dbname='postgres')
+            conn.autocommit = True
+            cur = conn.cursor()
+            cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (Config.DB_NAME,))
+            exists = cur.fetchone()
+            if not exists:
+                cur.execute(f'CREATE DATABASE "{Config.DB_NAME}"')
+                print(f"[PostgreSQL]: Created database '{Config.DB_NAME}' successfully.")
+            cur.close()
+            conn.close()
+        except Exception:
+            # Ignore error if database already exists or user doesn't have CREATE DATABASE permission
+            pass
 
     # 2. Connect to the application database and verify tables
     conn = _get_postgres_connection()
@@ -95,7 +98,7 @@ def _init_postgres_db(force=False):
         username VARCHAR(50) NOT NULL UNIQUE,
         email VARCHAR(100) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
-        role VARCHAR(20) NOT NULL DEFAULT 'Passenger' CHECK (role IN ('Admin', 'Driver', 'Passenger')),
+        role VARCHAR(30) NOT NULL DEFAULT 'Passenger' CHECK (role IN ('Super Admin', 'Admin', 'Driver', 'Passenger')),
         status VARCHAR(20) NOT NULL DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
         created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
@@ -189,11 +192,14 @@ def _init_postgres_db(force=False):
     driver_hash = generate_password_hash('driver123')
     passenger_hash = generate_password_hash('passenger123')
 
+    superadmin_hash = generate_password_hash('superadmin123')
+
     # Seed Users
     cur.executemany("""
     INSERT INTO users (username, email, password, role, status, created_at)
     VALUES (%s, %s, %s, %s, %s, %s)
     """, [
+        ('superadmin', 'superadmin@translink.com', superadmin_hash, 'Super Admin', 'Active', now),
         ('admin', 'admin@translink.com', admin_hash, 'Admin', 'Active', now),
         ('driver_john', 'john.doe@translink.com', driver_hash, 'Driver', 'Active', now),
         ('driver_sarah', 'sarah.connor@translink.com', driver_hash, 'Driver', 'Active', now),
@@ -217,14 +223,14 @@ def _init_postgres_db(force=False):
         ('BUS-107', 'FL-TR-7720', 'Volvo 9900 VIP Sleeper', 28, 'Inactive')
     ])
 
-    # Seed Drivers
+    # Seed Drivers (user_id shifted by 1 due to superadmin being user 1)
     cur.executemany("""
     INSERT INTO drivers (user_id, name, phone, license_number, status)
     VALUES (%s, %s, %s, %s, %s)
     """, [
-        (2, 'John Doe', '+1 (555) 234-5678', 'DL-NY-9023812', 'Active'),
-        (3, 'Sarah Connor', '+1 (555) 876-5432', 'DL-CA-4491028', 'Active'),
-        (4, 'Michael Scott', '+1 (555) 345-6789', 'DL-PA-1102934', 'Active'),
+        (3, 'John Doe', '+1 (555) 234-5678', 'DL-NY-9023812', 'Active'),
+        (4, 'Sarah Connor', '+1 (555) 876-5432', 'DL-CA-4491028', 'Active'),
+        (5, 'Michael Scott', '+1 (555) 345-6789', 'DL-PA-1102934', 'Active'),
         (None, 'David Miller', '+1 (555) 456-7890', 'DL-IL-5591023', 'On Leave'),
         (None, 'Emma Watson', '+1 (555) 678-9012', 'DL-WA-8837192', 'Active')
     ])
@@ -265,14 +271,14 @@ def _init_postgres_db(force=False):
         (6, 4, 1, dep5, arr5, 39, 850.00, 'Scheduled')
     ])
 
-    # Seed Passengers
+    # Seed Passengers (user_id shifted by 1 due to superadmin being user 1)
     cur.executemany("""
     INSERT INTO passengers (user_id, name, phone, email, status)
     VALUES (%s, %s, %s, %s, %s)
     """, [
-        (5, 'Alice Smith', '+1 (555) 123-4567', 'alice.smith@gmail.com', 'Active'),
-        (6, 'Bob Jones', '+1 (555) 987-6543', 'bob.jones@yahoo.com', 'Active'),
-        (7, 'Clara Oswald', '+1 (555) 654-3210', 'clara.oswald@outlook.com', 'Active'),
+        (6, 'Alice Smith', '+1 (555) 123-4567', 'alice.smith@gmail.com', 'Active'),
+        (7, 'Bob Jones', '+1 (555) 987-6543', 'bob.jones@yahoo.com', 'Active'),
+        (8, 'Clara Oswald', '+1 (555) 654-3210', 'clara.oswald@outlook.com', 'Active'),
         (None, 'Daniel Craig', '+1 (555) 789-0123', 'daniel.craig@gmail.com', 'Active')
     ])
 
